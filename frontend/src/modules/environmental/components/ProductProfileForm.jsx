@@ -18,8 +18,8 @@ const ProductProfileForm = ({ initialData = null, onSubmit, onCancel, isLoading 
         departmentId: initialData.department_id || user?.departmentId || '',
         name: initialData.name || '',
         description: initialData.description || '',
-        lifecycleStatus: initialData.lifecycle_status || 'DESIGN',
-        carbonFootprint: initialData.carbon_footprint || 0,
+        lifecycleStatus: initialData.lifecycleStatus || 'DESIGN',
+        carbonFootprint: initialData.carbonFootprint || 0,
       });
     }
   }, [initialData, user]);

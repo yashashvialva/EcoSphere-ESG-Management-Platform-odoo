@@ -33,10 +33,11 @@ module.exports = async (prisma) => {
   ];
 
   for (const perm of permissions) {
+    const action = perm.code.split('.').pop();
     await prisma.permission.upsert({
       where: { code: perm.code },
-      update: perm,
-      create: perm,
+      update: { ...perm, action },
+      create: { ...perm, action },
     });
   }
 };

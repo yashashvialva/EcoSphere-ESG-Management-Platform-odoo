@@ -147,8 +147,8 @@ const EmissionFactorsPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: '#6B7280' }}>{factor.unit}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono" style={{ color: '#2F2F2F' }}>{Number(factor.factor).toFixed(4)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={factor.is_active ? 'chip-success' : 'chip-gray'}>
-                        {factor.is_active ? 'Active' : 'Inactive'}
+                      <span className={factor.isActive ? 'chip-success' : 'chip-gray'}>
+                        {factor.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     {canManage && (

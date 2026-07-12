@@ -3,11 +3,11 @@ const prisma = require('../../../config/prisma');
 class CarbonTransactionRepository {
   async findAll({ skip, take, departmentId, dateFrom, dateTo }) {
     const where = {};
-    if (departmentId) where.department_id = departmentId;
+    if (departmentId) where.departmentId = departmentId;
     if (dateFrom || dateTo) {
-      where.transaction_date = {};
-      if (dateFrom) where.transaction_date.gte = new Date(dateFrom);
-      if (dateTo) where.transaction_date.lte = new Date(dateTo);
+      where.transactionDate = {};
+      if (dateFrom) where.transactionDate.gte = new Date(dateFrom);
+      if (dateTo) where.transactionDate.lte = new Date(dateTo);
     }
 
     const [data, total] = await Promise.all([
@@ -15,9 +15,9 @@ class CarbonTransactionRepository {
         where,
         skip,
         take,
-        orderBy: { transaction_date: 'desc' },
+        orderBy: { transactionDate: 'desc' },
         include: {
-          emission_factor: true,
+          emissionFactor: true,
           department: true,
         },
       }),
@@ -31,7 +31,7 @@ class CarbonTransactionRepository {
     return prisma.carbonTransaction.findUnique({
       where: { id },
       include: {
-        emission_factor: true,
+        emissionFactor: true,
         department: true,
       },
     });
@@ -40,16 +40,16 @@ class CarbonTransactionRepository {
   async create(data) {
     return prisma.carbonTransaction.create({
       data: {
-        department_id: data.departmentId,
-        emission_factor_id: data.emissionFactorId,
-        source_type: data.sourceType,
-        reference_id: data.referenceId,
+        departmentId: data.departmentId,
+        emissionFactorId: data.emissionFactorId,
+        sourceType: data.sourceType,
+        referenceId: data.referenceId,
         quantity: data.quantity,
-        emission_value: data.emissionValue,
-        transaction_date: new Date(data.transactionDate),
+        emissionValue: data.emissionValue,
+        transactionDate: new Date(data.transactionDate),
       },
       include: {
-        emission_factor: true,
+        emissionFactor: true,
         department: true,
       },
     });

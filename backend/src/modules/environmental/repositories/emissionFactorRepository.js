@@ -16,7 +16,7 @@ class EmissionFactorRepository {
         where,
         skip,
         take,
-        orderBy: { created_at: 'desc' },
+        orderBy: { source: 'asc' },
       }),
       prisma.emissionFactor.count({ where }),
     ]);
@@ -31,13 +31,8 @@ class EmissionFactorRepository {
   }
 
   async findBySourceAndUnit(source, unit) {
-    return prisma.emissionFactor.findUnique({
-      where: {
-        source_unit: {
-          source,
-          unit,
-        },
-      },
+    return prisma.emissionFactor.findFirst({
+      where: { source, unit },
     });
   }
 
@@ -60,7 +55,7 @@ class EmissionFactorRepository {
         unit: data.unit,
         factor: data.factor,
         description: data.description,
-        is_active: data.isActive,
+        isActive: data.isActive,
       },
     });
   }

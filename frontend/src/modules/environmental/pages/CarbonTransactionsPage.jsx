@@ -147,7 +147,7 @@ const CarbonTransactionsPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-2" style={{ color: '#836A78' }} />
-                        <span className="text-sm" style={{ color: '#2F2F2F' }}>{format(new Date(tx.transaction_date), 'MMM dd, yyyy')}</span>
+                        <span className="text-sm" style={{ color: '#2F2F2F' }}>{format(new Date(tx.transactionDate), 'MMM dd, yyyy')}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -155,15 +155,15 @@ const CarbonTransactionsPage = () => {
                       <div className="text-xs" style={{ color: '#6B7280' }}>{tx.department?.code}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold" style={{ color: '#2F2F2F' }}>{tx.emission_factor?.source}</div>
-                      <div className="text-xs" style={{ color: '#6B7280' }}>{tx.source_type} {tx.reference_id && `• Ref: ${tx.reference_id}`}</div>
+                      <div className="text-sm font-semibold" style={{ color: '#2F2F2F' }}>{tx.emissionFactor?.source}</div>
+                      <div className="text-xs" style={{ color: '#6B7280' }}>{tx.sourceType} {tx.referenceId && `• Ref: ${tx.referenceId}`}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: '#2F2F2F' }}>
-                      {Number(tx.quantity).toLocaleString()} <span className="text-xs ml-1" style={{ color: '#6B7280' }}>{tx.emission_factor?.unit}</span>
+                      {Number(tx.quantity).toLocaleString()} <span className="text-xs ml-1" style={{ color: '#6B7280' }}>{tx.emissionFactor?.unit}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="chip-error">
-                        {Number(tx.emission_value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {Number(tx.emissionValue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </td>
                   </tr>

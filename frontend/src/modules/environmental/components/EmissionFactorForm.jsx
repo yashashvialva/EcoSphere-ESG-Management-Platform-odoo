@@ -16,7 +16,7 @@ const EmissionFactorForm = ({ initialData = null, onSubmit, onCancel, isLoading 
         unit: initialData.unit || '',
         factor: initialData.factor || '',
         description: initialData.description || '',
-        isActive: initialData.is_active !== undefined ? initialData.is_active : true,
+        isActive: initialData.isActive !== undefined ? initialData.isActive : true,
       });
     }
   }, [initialData]);

@@ -2,9 +2,9 @@ module.exports = async (prisma) => {
   console.log('Seeding categories...');
 
   const categories = [
-    { name: 'Tree Plantation', type: 'CSR' },
-    { name: 'Waste Cleanup', type: 'CSR' },
-    { name: 'Education Volunteering', type: 'CSR' },
+    { name: 'Tree Plantation', type: 'CSR_ACTIVITY' },
+    { name: 'Waste Cleanup', type: 'CSR_ACTIVITY' },
+    { name: 'Education Volunteering', type: 'CSR_ACTIVITY' },
     { name: 'Zero Waste Week', type: 'CHALLENGE' },
     { name: 'Cycle to Work', type: 'CHALLENGE' },
     { name: 'Energy Saving', type: 'CHALLENGE' },

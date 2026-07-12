@@ -3,28 +3,70 @@ const bcrypt = require('bcrypt');
 module.exports = async (prisma) => {
   console.log('Seeding users...');
 
-  // Get Admin Role
+  // Get Roles
   const adminRole = await prisma.role.findUnique({ where: { name: 'Administrator' } });
+  const employeeRole = await prisma.role.findUnique({ where: { name: 'Employee' } });
   
-  // Get HQ Department
+  // Get Departments
   const hqDept = await prisma.department.findUnique({ where: { code: 'HQ' } });
+  const itDept = await prisma.department.findUnique({ where: { code: 'IT' } }) || hqDept;
 
   if (adminRole && hqDept) {
-    const passwordHash = await bcrypt.hash('Admin@123', 12);
+    const adminPassword = await bcrypt.hash('Admin@123', 12);
     
     await prisma.employee.upsert({
       where: { email: 'admin@ecosphere.com' },
       update: {
-        password_hash: passwordHash
+        passwordHash: adminPassword
       },
       create: {
-        first_name: 'System',
-        last_name: 'Admin',
+        firstName: 'System',
+        lastName: 'Admin',
         email: 'admin@ecosphere.com',
-        password_hash: passwordHash,
-        department_id: hqDept.id,
-        role_id: adminRole.id,
-        is_active: true
+        passwordHash: adminPassword,
+        departmentId: hqDept.id,
+        roleId: adminRole.id,
+        isActive: true
+      },
+    });
+  }
+  
+  if (employeeRole && itDept) {
+    const employeePassword = await bcrypt.hash('password123', 10);
+    
+    // John Doe
+    await prisma.employee.upsert({
+      where: { email: 'john.doe@ecosphere.com' },
+      update: {
+        passwordHash: employeePassword
+      },
+      create: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@ecosphere.com',
+        passwordHash: employeePassword,
+        departmentId: itDept.id,
+        roleId: employeeRole.id,
+        isActive: true,
+        totalXp: 100
+      },
+    });
+
+    // Jane Smith
+    await prisma.employee.upsert({
+      where: { email: 'jane.smith@ecosphere.com' },
+      update: {
+        passwordHash: employeePassword
+      },
+      create: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: 'jane.smith@ecosphere.com',
+        passwordHash: employeePassword,
+        departmentId: itDept.id,
+        roleId: employeeRole.id,
+        isActive: true,
+        totalXp: 250
       },
     });
   }

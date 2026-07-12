@@ -7,7 +7,7 @@ class AuthRepository {
       include: {
         role: {
           include: {
-            permissions: {
+            rolePermissions: {
               include: { permission: true },
             },
           },
@@ -23,7 +23,7 @@ class AuthRepository {
       include: {
         role: {
           include: {
-            permissions: {
+            rolePermissions: {
               include: { permission: true },
             },
           },

@@ -49,12 +49,12 @@ class AuthService {
       throw new AppError('Invalid email or password.', 401);
     }
 
-    if (!employee.is_active) {
+    if (!employee.isActive) {
       throw new AppError('Your account has been deactivated. Contact an administrator.', 403);
     }
 
     // Compare password
-    const isMatch = await bcrypt.compare(password, employee.password_hash);
+    const isMatch = await bcrypt.compare(password, employee.passwordHash);
     if (!isMatch) {
       throw new AppError('Invalid email or password.', 401);
     }
@@ -88,14 +88,14 @@ class AuthService {
   _formatUser(employee) {
     return {
       id: employee.id,
-      firstName: employee.first_name,
-      lastName: employee.last_name,
+      firstName: employee.firstName,
+      lastName: employee.lastName,
       email: employee.email,
       role: employee.role?.name || null,
       department: employee.department?.name || null,
-      departmentId: employee.department_id,
-      totalXp: employee.total_xp,
-      permissions: employee.role?.permissions?.map((rp) => rp.permission.code) || [],
+      departmentId: employee.departmentId,
+      totalXp: employee.totalXp,
+      permissions: employee.role?.rolePermissions?.map((rp) => rp.permission.code) || [],
     };
   }
 }

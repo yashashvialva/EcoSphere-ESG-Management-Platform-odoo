@@ -152,7 +152,7 @@ const ProductProfilesPage = () => {
                       {getStatusBadge(profile.lifecycle_status)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono" style={{ color: '#2F2F2F' }}>
-                      {Number(profile.carbon_footprint).toLocaleString()}
+                      {Number(profile.carbonFootprint).toLocaleString()}
                     </td>
                     {canManage && (
                       <td className="px-6 py-4 whitespace-nowrap text-right space-x-3">

@@ -9,17 +9,17 @@ class DashboardRepository {
     const endDate = new Date(`${year + 1}-01-01`);
 
     const where = {
-      transaction_date: { gte: startDate, lt: endDate },
+      transactionDate: { gte: startDate, lt: endDate },
     };
-    if (departmentId) where.department_id = departmentId;
+    if (departmentId) where.departmentId = departmentId;
 
     const transactions = await prisma.carbonTransaction.findMany({
       where,
       select: {
-        transaction_date: true,
-        emission_value: true,
+        transactionDate: true,
+        emissionValue: true,
       },
-      orderBy: { transaction_date: 'asc' },
+      orderBy: { transactionDate: 'asc' },
     });
 
     // Aggregate by month
@@ -30,8 +30,8 @@ class DashboardRepository {
     }));
 
     transactions.forEach((t) => {
-      const month = new Date(t.transaction_date).getMonth();
-      monthlyData[month].totalEmissions += Number(t.emission_value);
+      const month = new Date(t.transactionDate).getMonth();
+      monthlyData[month].totalEmissions += Number(t.emissionValue);
       monthlyData[month].count += 1;
     });
 
@@ -43,12 +43,12 @@ class DashboardRepository {
    */
   async getEmissionsByCategory(departmentId) {
     const where = {};
-    if (departmentId) where.department_id = departmentId;
+    if (departmentId) where.departmentId = departmentId;
 
     const transactions = await prisma.carbonTransaction.findMany({
       where,
       include: {
-        emission_factor: {
+        emissionFactor: {
           select: { source: true },
         },
       },
@@ -56,11 +56,11 @@ class DashboardRepository {
 
     const categoryMap = {};
     transactions.forEach((t) => {
-      const category = t.emission_factor?.source || 'Unknown';
+      const category = t.emissionFactor?.source || 'Unknown';
       if (!categoryMap[category]) {
         categoryMap[category] = { category, totalEmissions: 0, count: 0 };
       }
-      categoryMap[category].totalEmissions += Number(t.emission_value);
+      categoryMap[category].totalEmissions += Number(t.emissionValue);
       categoryMap[category].count += 1;
     });
 
@@ -85,7 +85,7 @@ class DashboardRepository {
       if (!deptMap[deptName]) {
         deptMap[deptName] = { department: deptName, code: t.department?.code, totalEmissions: 0, count: 0 };
       }
-      deptMap[deptName].totalEmissions += Number(t.emission_value);
+      deptMap[deptName].totalEmissions += Number(t.emissionValue);
       deptMap[deptName].count += 1;
     });
 
@@ -98,25 +98,23 @@ class DashboardRepository {
   async getSummaryStats(departmentId) {
     const txWhere = {};
     const goalWhere = {};
-    const profileWhere = {};
     if (departmentId) {
-      txWhere.department_id = departmentId;
-      goalWhere.department_id = departmentId;
-      profileWhere.department_id = departmentId;
+      txWhere.departmentId = departmentId;
+      goalWhere.departmentId = departmentId;
     }
 
     const [totalEmissionsResult, totalTransactions, activeGoals, productProfiles] = await Promise.all([
       prisma.carbonTransaction.aggregate({
         where: txWhere,
-        _sum: { emission_value: true },
+        _sum: { emissionValue: true },
       }),
       prisma.carbonTransaction.count({ where: txWhere }),
-      prisma.esgGoal.count({ where: { ...goalWhere, status: { in: ['ON_TRACK', 'AT_RISK'] } } }),
-      prisma.productProfile.count({ where: profileWhere }),
+      prisma.esgGoal.count({ where: { ...goalWhere, status: { in: ['ACTIVE', 'DRAFT'] } } }),
+      prisma.productEsgProfile.count(),
     ]);
 
     return {
-      totalEmissions: Number(totalEmissionsResult._sum.emission_value || 0),
+      totalEmissions: Number(totalEmissionsResult._sum.emissionValue || 0),
       totalTransactions,
       activeGoals,
       productProfiles,
@@ -128,7 +126,7 @@ class DashboardRepository {
    */
   async getGoalsOverview(departmentId) {
     const where = {};
-    if (departmentId) where.department_id = departmentId;
+    if (departmentId) where.departmentId = departmentId;
 
     const goals = await prisma.esgGoal.findMany({
       where,
@@ -140,13 +138,13 @@ class DashboardRepository {
     return goals.map((g) => ({
       id: g.id,
       department: g.department?.name || 'Organization',
-      description: g.description,
-      targetValue: Number(g.target_value),
-      currentValue: Number(g.current_value),
-      unit: g.unit,
+      description: g.title,
+      targetValue: Number(g.targetValue),
+      currentValue: Number(g.achievedValue),
+      unit: 'kg CO2',
       status: g.status,
       deadline: g.deadline,
-      progress: g.target_value > 0 ? Math.round((Number(g.current_value) / Number(g.target_value)) * 100) : 0,
+      progress: Number(g.targetValue) > 0 ? Math.round((Number(g.achievedValue) / Number(g.targetValue)) * 100) : 0,
     }));
   }
 }

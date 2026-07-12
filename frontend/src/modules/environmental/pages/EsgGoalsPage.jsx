@@ -117,7 +117,7 @@ const EsgGoalsPage = () => {
           </div>
         ) : (
           goals.map((goal) => {
-            const progressPercentage = Math.min(100, Math.max(0, (goal.current_value / goal.target_value) * 100));
+            const progressPercentage = Math.min(100, Math.max(0, (goal.currentValue / goal.targetValue) * 100));
             
             return (
               <div key={goal.id} className="card relative transition-transform hover:-translate-y-1">
@@ -154,8 +154,8 @@ const EsgGoalsPage = () => {
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: '#836A78' }}>Progress</p>
                     <div className="flex items-baseline">
-                      <span className="text-xl font-bold" style={{ color: '#2F2F2F' }}>{Number(goal.current_value).toLocaleString()}</span>
-                      <span className="text-xs ml-1" style={{ color: '#6B7280' }}>/ {Number(goal.target_value).toLocaleString()} {goal.unit}</span>
+                      <span className="text-xl font-bold" style={{ color: '#2F2F2F' }}>{Number(goal.currentValue).toLocaleString()}</span>
+                      <span className="text-xs ml-1" style={{ color: '#6B7280' }}>/ {Number(goal.targetValue).toLocaleString()} {goal.unit}</span>
                     </div>
                   </div>
                   {getStatusBadge(goal.status)}

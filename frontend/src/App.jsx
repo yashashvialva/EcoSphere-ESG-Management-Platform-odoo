@@ -7,11 +7,18 @@ import { AuthProvider, useAuth } from './store/authStore';
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
 
+// Environmental Pages
 import EmissionFactorsPage from './modules/environmental/pages/EmissionFactorsPage';
 import CarbonTransactionsPage from './modules/environmental/pages/CarbonTransactionsPage';
 import EsgGoalsPage from './modules/environmental/pages/EsgGoalsPage';
 import ProductProfilesPage from './modules/environmental/pages/ProductProfilesPage';
 import EnvironmentalDashboard from './modules/environmental/pages/EnvironmentalDashboard';
+
+// Social Pages
+import CsrActivityList from './modules/social/pages/CsrActivityList';
+import CsrActivityDetail from './modules/social/pages/CsrActivityDetail';
+import TrainingList from './modules/social/pages/TrainingList';
+import DiversityDashboard from './modules/social/pages/DiversityDashboard';
 
 import LoginPage from './modules/auth/pages/LoginPage';
 
@@ -46,8 +53,17 @@ const AppRoutes = () => {
           <Route path="esg-goals" element={<ProtectedRoute requiredPermission="environmental.read"><EsgGoalsPage /></ProtectedRoute>} />
           <Route path="product-profiles" element={<ProtectedRoute requiredPermission="environmental.read"><ProductProfilesPage /></ProtectedRoute>} />
         </Route>
+
+        {/* Developer 2 - Social Routes */}
+        <Route path="social">
+          <Route path="csr-activities" element={<ProtectedRoute><CsrActivityList /></ProtectedRoute>} />
+          <Route path="csr-activities/:id" element={<ProtectedRoute><CsrActivityDetail /></ProtectedRoute>} />
+          <Route path="training" element={<ProtectedRoute><TrainingList /></ProtectedRoute>} />
+          <Route path="diversity" element={<ProtectedRoute><DiversityDashboard /></ProtectedRoute>} />
+        </Route>
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />
+        <Route path="*" element={<div className="p-6">Page not found</div>} />
       </Route>
     </Routes>
   );

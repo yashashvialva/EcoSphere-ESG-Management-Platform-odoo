@@ -21,6 +21,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   Info,
+  BookOpen
+
 } from 'lucide-react';
 
 // Static sample notifications — replace with real API data when ready
@@ -59,7 +61,12 @@ const MainLayout = () => {
     { name: 'Carbon Transactions', href: '/environmental/carbon-transactions',   icon: Recycle,     permission: 'environmental.read' },
     { name: 'ESG Goals',           href: '/environmental/esg-goals',             icon: Target,      permission: 'environmental.read' },
     { name: 'Product Profiles',    href: '/environmental/product-profiles',      icon: Globe,       permission: 'environmental.read' },
-    { name: 'Social',              href: '/social',                              icon: Users,       permission: 'social.read' },
+    
+    // Social Links
+    { name: 'CSR Activities', href: '/social/csr-activities', icon: Leaf },
+    { name: 'Training', href: '/social/training', icon: BookOpen },
+    { name: 'Diversity', href: '/social/diversity', icon: Users },
+    
     { name: 'Governance',          href: '/governance',                          icon: ShieldCheck, permission: 'governance.read' },
     { name: 'Gamification',        href: '/gamification',                        icon: Award,       permission: 'gamification.read' },
     { name: 'Settings',            href: '/settings',                            icon: Settings,    permission: 'settings.manage' },
