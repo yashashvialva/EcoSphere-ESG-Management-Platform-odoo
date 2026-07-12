@@ -1,5 +1,5 @@
 const esgGoalService = require('../services/esgGoalService');
-const { ApiResponse } = require('../../../../shared/responses/apiResponse');
+const { ApiResponse } = require('../../../shared/responses/apiResponse');
 
 class EsgGoalController {
   async getAll(req, res, next) {

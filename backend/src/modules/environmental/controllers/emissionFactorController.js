@@ -1,5 +1,5 @@
 const emissionFactorService = require('../services/emissionFactorService');
-const { ApiResponse } = require('../../../../shared/responses/apiResponse');
+const { ApiResponse } = require('../../../shared/responses/apiResponse');
 
 class EmissionFactorController {
   async getAll(req, res, next) {

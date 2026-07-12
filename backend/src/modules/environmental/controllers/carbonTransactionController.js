@@ -1,5 +1,5 @@
 const carbonTransactionService = require('../services/carbonTransactionService');
-const { ApiResponse } = require('../../../../shared/responses/apiResponse');
+const { ApiResponse } = require('../../../shared/responses/apiResponse');
 
 class CarbonTransactionController {
   async getAll(req, res, next) {

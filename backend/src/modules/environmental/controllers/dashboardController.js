@@ -1,5 +1,5 @@
 const dashboardService = require('../services/dashboardService');
-const { ApiResponse } = require('../../../../shared/responses/apiResponse');
+const { ApiResponse } = require('../../../shared/responses/apiResponse');
 
 class DashboardController {
   async getDashboard(req, res, next) {

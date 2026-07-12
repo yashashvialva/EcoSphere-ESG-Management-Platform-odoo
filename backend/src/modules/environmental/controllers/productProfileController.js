@@ -1,5 +1,5 @@
 const productProfileService = require('../services/productProfileService');
-const { ApiResponse } = require('../../../../shared/responses/apiResponse');
+const { ApiResponse } = require('../../../shared/responses/apiResponse');
 
 class ProductProfileController {
   async getAll(req, res, next) {
