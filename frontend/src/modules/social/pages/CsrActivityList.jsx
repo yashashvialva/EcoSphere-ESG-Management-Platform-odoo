@@ -80,7 +80,7 @@ export default function CsrActivityList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {activities.map(activity => (
-          <Link key={activity.id} to={`/social/csr-activities/${activity.id}`} className="block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+          <Link key={activity.id} to={`/social/csr-activities/${activity.id}`} className="card !p-0 overflow-hidden hover:-translate-y-1">
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center">
@@ -148,7 +148,7 @@ export default function CsrActivityList() {
               
               <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-100">
                 <button type="button" onClick={() => setShowCreateModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button type="submit" className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Create</button>
+                <button type="submit" className="btn-primary">Create</button>
               </div>
             </form>
           </div>
@@ -176,7 +176,7 @@ export default function CsrActivityList() {
                   setModal({ ...modal, show: false });
                   if (modal.onConfirm) modal.onConfirm();
                 }}
-                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                className="btn-primary"
               >
                 {modal.type === 'confirm' ? 'Confirm' : 'OK'}
               </button>

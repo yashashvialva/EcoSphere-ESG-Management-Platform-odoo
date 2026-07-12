@@ -59,7 +59,7 @@ export default function TrainingList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {trainings.map(training => (
-          <div key={training.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+          <div key={training.id} className="card !p-0 overflow-hidden hover:-translate-y-1">
             <div className="p-6">
               <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4">
                 <BookOpen className="w-6 h-6" />
@@ -80,7 +80,7 @@ export default function TrainingList() {
               ) : (
                 <button 
                   onClick={() => handleCompleteClick(training.id, training.title)}
-                  className="w-full flex justify-center items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-sm"
+                  className="btn-primary"
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Mark as Completed
@@ -118,7 +118,7 @@ export default function TrainingList() {
                   setModal({ ...modal, show: false });
                   if (modal.onConfirm) modal.onConfirm();
                 }}
-                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                className="btn-primary"
               >
                 {modal.type === 'confirm' ? 'Confirm' : 'OK'}
               </button>

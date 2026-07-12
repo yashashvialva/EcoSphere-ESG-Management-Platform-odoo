@@ -69,7 +69,8 @@ const EmissionFactorsPage = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-3">
@@ -179,6 +180,7 @@ const EmissionFactorsPage = () => {
           </div>
         )}
       </div>
+      </div>
 
       {/* Modal */}
       {isModalOpen && (
@@ -201,7 +203,7 @@ const EmissionFactorsPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

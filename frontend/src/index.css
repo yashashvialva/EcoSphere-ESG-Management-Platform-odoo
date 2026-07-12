@@ -33,7 +33,20 @@
   }
   /* Card */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-border-main p-6 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+    @apply bg-white rounded-2xl shadow-sm border border-border-main p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+    border-radius: 16px;
+  }
+  
+  /* Table overrides */
+  .table-card {
+    @apply bg-white rounded-2xl border border-border-main overflow-hidden;
+    border-radius: 16px;
+  }
+  .table-header {
+    background-color: rgba(248, 199, 174, 0.2); /* Peach with 20% opacity */
+  }
+  .table-row-hover:hover {
+    background-color: #FFF8C9; /* Light Cream */
   }
   /* Status chip */
   .chip-success {

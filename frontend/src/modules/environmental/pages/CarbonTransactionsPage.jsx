@@ -59,7 +59,8 @@ const CarbonTransactionsPage = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-3">
@@ -119,7 +120,7 @@ const CarbonTransactionsPage = () => {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden" style={{ borderColor: '#ECE8E3' }}>
+      <div className="table-card">
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead>
@@ -183,13 +184,14 @@ const CarbonTransactionsPage = () => {
           </div>
         )}
       </div>
+      </div>
 
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed z-50 inset-0 overflow-y-auto" role="dialog" aria-modal="true">
           <div className="flex items-center justify-center min-h-screen p-4">
             <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-            <div className="relative bg-white rounded-2xl shadow-lg max-w-lg w-full border" style={{ borderColor: '#ECE8E3' }}>
+            <div className="card max-w-lg w-full relative z-10">
               <div className="px-6 pt-6 pb-4">
                 <div className="flex items-center mb-4 space-x-3">
                   <div className="p-2 rounded-xl" style={{ background: '#9BBDAF22' }}>
@@ -203,7 +205,7 @@ const CarbonTransactionsPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

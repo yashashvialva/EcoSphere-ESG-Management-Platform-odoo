@@ -46,7 +46,7 @@ export default function ParticipationList({ activityId, initialParticipations = 
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="table-card">
       <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
         <h3 className="text-lg font-bold text-gray-900">Participants ({participations.length})</h3>
       </div>
@@ -115,7 +115,7 @@ export default function ParticipationList({ activityId, initialParticipations = 
                   setModal({ ...modal, show: false });
                   if (modal.onConfirm) modal.onConfirm();
                 }}
-                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                className="btn-primary"
               >
                 {modal.type === 'confirm' ? 'Confirm' : 'OK'}
               </button>

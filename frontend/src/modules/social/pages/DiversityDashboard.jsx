@@ -78,7 +78,7 @@ export default function DiversityDashboard() {
     labels: hasGenderData ? genderData.map(m => m.notes) : ['Male', 'Female', 'Non-Binary'],
     datasets: [{
       data: hasGenderData ? genderData.map(m => m.metricValue) : [45, 50, 5],
-      backgroundColor: ['#3b82f6', '#ec4899', '#8b5cf6'],
+      backgroundColor: ['#9BBDAF', '#F8C7AE', '#836A78'],
       borderWidth: 0,
     }]
   };
@@ -88,7 +88,7 @@ export default function DiversityDashboard() {
     datasets: [{
       label: 'Diversity Score',
       data: [78, 85, 92, 88],
-      backgroundColor: '#10b981',
+      backgroundColor: '#9BBDAF',
       borderRadius: 4,
     }]
   };
@@ -104,7 +104,7 @@ export default function DiversityDashboard() {
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-sm shadow-sm"
+          className="btn-primary"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Metric Snapshot
@@ -112,7 +112,7 @@ export default function DiversityDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div className="card flex items-center">
           <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mr-4">
             <Users className="w-6 h-6 text-blue-600" />
           </div>
@@ -122,7 +122,7 @@ export default function DiversityDashboard() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div className="card flex items-center">
           <div className="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center mr-4">
             <Building2 className="w-6 h-6 text-green-600" />
           </div>
@@ -132,7 +132,7 @@ export default function DiversityDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div className="card flex items-center">
           <div className="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center mr-4">
             <TrendingUp className="w-6 h-6 text-purple-600" />
           </div>
@@ -144,14 +144,14 @@ export default function DiversityDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="card">
           <h3 className="text-lg font-bold text-gray-900 mb-6">Gender Distribution</h3>
           <div className="flex justify-center h-64">
             <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="card">
           <h3 className="text-lg font-bold text-gray-900 mb-6">Diversity Score by Department</h3>
           <div className="h-64">
             <Bar 
@@ -193,7 +193,7 @@ export default function DiversityDashboard() {
               
               <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-100">
                 <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button type="submit" className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Add</button>
+                <button type="submit" className="btn-primary">Add</button>
               </div>
             </form>
           </div>
@@ -221,7 +221,7 @@ export default function DiversityDashboard() {
                   setModal({ ...modal, show: false });
                   if (modal.onConfirm) modal.onConfirm();
                 }}
-                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                className="btn-primary"
               >
                 {modal.type === 'confirm' ? 'Confirm' : 'OK'}
               </button>

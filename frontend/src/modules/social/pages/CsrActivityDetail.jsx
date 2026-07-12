@@ -126,7 +126,7 @@ export default function CsrActivityDetail() {
         <ArrowLeft className="w-4 h-4 mr-1" /> Back to Activities
       </button>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="table-card">
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
             <div>
@@ -230,7 +230,7 @@ export default function CsrActivityDetail() {
                 <button 
                   onClick={handleJoinClick}
                   disabled={joining}
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-sm"
+                  className="btn-primary"
                 >
                   {joining ? 'Joining...' : 'Join Activity'}
                 </button>
@@ -282,7 +282,7 @@ export default function CsrActivityDetail() {
               
               <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-100">
                 <button type="button" onClick={() => setShowEditModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button type="submit" className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Save Changes</button>
+                <button type="submit" className="btn-primary">Save Changes</button>
               </div>
             </form>
           </div>
@@ -310,7 +310,7 @@ export default function CsrActivityDetail() {
                   setModal({ ...modal, show: false });
                   if (modal.onConfirm) modal.onConfirm();
                 }}
-                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                className="btn-primary"
               >
                 {modal.type === 'confirm' ? 'Confirm' : 'OK'}
               </button>
