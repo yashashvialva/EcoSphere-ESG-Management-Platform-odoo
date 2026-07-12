@@ -1,20 +1,23 @@
 const app = require('./app');
-const config = require('./config/env');
+const env = require('./config/env');
+const logger = require('./shared/logger');
 const prisma = require('./config/prisma');
+
+const PORT = env.PORT;
 
 const startServer = async () => {
   try {
     // Test database connection
     await prisma.$connect();
-    console.log('✅ Database connected successfully');
+    logger.info('✅ Database connected successfully');
 
-    app.listen(config.port, () => {
-      console.log(`🚀 EcoSphere API running on port ${config.port}`);
-      console.log(`📍 Environment: ${config.nodeEnv}`);
-      console.log(`🏥 Health check: http://localhost:${config.port}/api/health`);
+    app.listen(PORT, () => {
+      logger.info(`🚀 EcoSphere API running on port ${PORT}`);
+      logger.info(`📍 Environment: ${env.NODE_ENV}`);
+      logger.info(`🏥 Health check: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
+    logger.error('❌ Failed to start server:', error.message);
     await prisma.$disconnect();
     process.exit(1);
   }
@@ -22,7 +25,7 @@ const startServer = async () => {
 
 // Graceful shutdown
 const gracefulShutdown = async (signal) => {
-  console.log(`\n🛑 ${signal} received. Shutting down gracefully...`);
+  logger.info(`\n🛑 ${signal} received. Shutting down gracefully...`);
   await prisma.$disconnect();
   process.exit(0);
 };

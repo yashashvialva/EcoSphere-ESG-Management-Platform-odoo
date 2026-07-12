@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { socialApi } from '../services/socialApi';
 import { BookOpen, CheckCircle, Award } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../store/authStore';
 
 export default function TrainingList() {
   const [trainings, setTrainings] = useState([]);

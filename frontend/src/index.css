@@ -4,6 +4,37 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-background text-text-primary font-sans antialiased;
   }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-semibold px-4 py-2.5 rounded-lg hover:bg-primary-hover transition-all duration-150 focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-white text-primary border border-primary font-semibold px-4 py-2.5 rounded-lg hover:bg-primary-50 transition-all duration-150 focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .input-field {
+    @apply w-full border border-border-main rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-150 disabled:bg-gray-50 disabled:cursor-not-allowed text-text-primary placeholder-gray-400;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-border-main p-6 transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md;
+  }
+}
+
+/* Custom Scrollbar for tables */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

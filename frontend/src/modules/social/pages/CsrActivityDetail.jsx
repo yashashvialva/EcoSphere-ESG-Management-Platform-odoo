@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { socialApi } from '../services/socialApi';
 import ParticipationList from '../components/ParticipationList';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../store/authStore';
 import { Calendar, MapPin, Users, Award, ArrowLeft } from 'lucide-react';
 
 export default function CsrActivityDetail() {
