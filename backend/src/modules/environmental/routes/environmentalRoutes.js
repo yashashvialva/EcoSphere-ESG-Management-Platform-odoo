@@ -1,0 +1,45 @@
+const express = require('express');
+const router = express.Router();
+const emissionFactorController = require('../controllers/emissionFactorController');
+const { validate } = require('../../../../middleware/validate');
+const { authenticate } = require('../../../../middleware/auth');
+const { authorize } = require('../../../../middleware/authorize');
+const { createEmissionFactorSchema, updateEmissionFactorSchema } = require('../validators/emissionFactorValidator');
+
+// Apply authentication to all routes
+router.use(authenticate);
+
+// Routes
+router.get(
+  '/emission-factors',
+  authorize('environmental.read'),
+  emissionFactorController.getAll
+);
+
+router.get(
+  '/emission-factors/:id',
+  authorize('environmental.read'),
+  emissionFactorController.getById
+);
+
+router.post(
+  '/emission-factors',
+  authorize('environmental.manage'),
+  validate(createEmissionFactorSchema),
+  emissionFactorController.create
+);
+
+router.patch(
+  '/emission-factors/:id',
+  authorize('environmental.manage'),
+  validate(updateEmissionFactorSchema),
+  emissionFactorController.update
+);
+
+router.delete(
+  '/emission-factors/:id',
+  authorize('environmental.manage'),
+  emissionFactorController.delete
+);
+
+module.exports = router;

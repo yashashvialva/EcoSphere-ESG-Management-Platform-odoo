@@ -5,6 +5,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 // Import routes
 const authRoutes = require('./modules/auth/routes/authRoutes');
+const environmentalRoutes = require('./modules/environmental/routes/environmentalRoutes');
 
 const app = express();
 
@@ -23,9 +24,9 @@ app.get('/api/v1/health', (req, res) => {
 
 // ─── API Routes ──────────────────────────────────────────────
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/environmental', environmentalRoutes);
 
 // Module routes will be added here as they are built:
-// app.use('/api/v1/environmental', environmentalRoutes);
 // app.use('/api/v1/social', socialRoutes);
 // app.use('/api/v1/governance', governanceRoutes);
 // app.use('/api/v1/gamification', gamificationRoutes);

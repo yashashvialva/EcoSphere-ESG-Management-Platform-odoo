@@ -7,6 +7,7 @@ const seedDepartments = require('./departments.seed');
 const seedUsers = require('./users.seed');
 const seedCategories = require('./categories.seed');
 const seedSettings = require('./settings.seed');
+const seedEmissionFactors = require('./emission-factors.seed');
 
 async function main() {
   console.log('Starting seed process...');
@@ -18,6 +19,7 @@ async function main() {
     await seedUsers(prisma);
     await seedCategories(prisma);
     await seedSettings(prisma);
+    await seedEmissionFactors(prisma);
 
     console.log('Seed process completed successfully.');
   } catch (error) {

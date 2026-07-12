@@ -6,10 +6,11 @@ import { AuthProvider, useAuth } from './store/authStore';
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
 
+import EmissionFactorsPage from './modules/environmental/pages/EmissionFactorsPage';
+
 // Placeholder Pages (To be implemented)
 const LoginPage = () => <div className="p-8">Login Page Placeholder</div>;
 const Dashboard = () => <div className="p-8"><h1 className="text-2xl font-bold">Dashboard</h1></div>;
-const Environmental = () => <div className="p-8"><h1 className="text-2xl font-bold">Environmental Module</h1></div>;
 
 const ProtectedRoute = ({ children, requiredPermission }) => {
   const { isAuthenticated, loading, hasPermission } = useAuth();
@@ -35,7 +36,7 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<Dashboard />} />
         
         {/* Developer 1 - Environmental Routes */}
-        <Route path="environmental" element={<ProtectedRoute requiredPermission="environmental.read"><Environmental /></ProtectedRoute>} />
+        <Route path="environmental" element={<ProtectedRoute requiredPermission="environmental.read"><EmissionFactorsPage /></ProtectedRoute>} />
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />
       </Route>
