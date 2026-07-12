@@ -3,14 +3,16 @@ const { z } = require('zod');
 const createProductProfileSchema = z.object({
   departmentId: z.string().uuid('Invalid department ID'),
   name: z.string().min(2).max(100),
-  description: z.string().max(500).optional(),
+  emissionFactorId: z.string().uuid('Invalid emission factor ID').optional().or(z.literal('')),
+  recyclable: z.boolean().optional(),
+  sustainabilityRating: z.number().min(0).max(5).optional(),
 });
 
 const updateProductProfileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
-  description: z.string().max(500).optional(),
-  lifecycleStatus: z.enum(['DESIGN', 'MANUFACTURING', 'DISTRIBUTION', 'END_OF_LIFE']).optional(),
-  carbonFootprint: z.number().nonnegative().optional(),
+  emissionFactorId: z.string().uuid('Invalid emission factor ID').optional().or(z.literal('')),
+  recyclable: z.boolean().optional(),
+  sustainabilityRating: z.number().min(0).max(5).optional(),
 });
 
 module.exports = { createProductProfileSchema, updateProductProfileSchema };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { socialApi } from '../services/socialApi';
 import { ShieldCheck, XCircle } from 'lucide-react';
 
-export default function ParticipationList({ activityId, initialParticipations = [] }) {
+export default function ParticipationList({ activityId, initialParticipations = [], isAdmin = false }) {
   const [participations, setParticipations] = useState(initialParticipations);
   const [loadingId, setLoadingId] = useState(null);
 
@@ -66,7 +66,7 @@ export default function ParticipationList({ activityId, initialParticipations = 
               )}
             </div>
 
-            {p.approvalStatus === 'PENDING' && (
+            {p.approvalStatus === 'PENDING' && isAdmin && (
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleEvaluateClick(p.id, 'APPROVED', `${p.employee?.firstName} ${p.employee?.lastName}`)}

@@ -18,6 +18,7 @@ const ProductProfilesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   useEffect(() => { fetchProfiles(); }, [page]);
 
@@ -49,25 +50,30 @@ const ProductProfilesPage = () => {
       fetchProfiles();
       handleCloseModal();
     } catch (err) {
-      alert(err.message || 'An error occurred while saving.');
+      setError(err.message || 'An error occurred while saving.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this product profile?')) {
-      try {
-        await environmentalApi.deleteProductProfile(id);
-        fetchProfiles();
-      } catch (err) {
-        alert(err.message || 'Failed to delete product profile.');
-      }
+  const handleDelete = async () => {
+    if (!deleteConfirmId) return;
+    try {
+      setIsSubmitting(true);
+      await environmentalApi.deleteProductProfile(deleteConfirmId);
+      fetchProfiles();
+      setDeleteConfirmId(null);
+    } catch (err) {
+      setError(err.message || 'Failed to delete product profile.');
+      setDeleteConfirmId(null);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
+      case 'ACTIVE': return <span className="chip-success">Active</span>;
       case 'DESIGN': return <span className="chip-info">Design</span>;
       case 'MANUFACTURING': return <span className="chip-warning">Manufacturing</span>;
       case 'DISTRIBUTION': return <span className="chip-mauve">Distribution</span>;
@@ -113,7 +119,6 @@ const ProductProfilesPage = () => {
             <thead>
               <tr style={{ background: '#F8C7AE22' }}>
                 <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Product</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Department</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Lifecycle Phase</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Footprint (kg CO2e)</th>
                 {canManage && <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Actions</th>}
@@ -121,9 +126,9 @@ const ProductProfilesPage = () => {
             </thead>
             <tbody className="divide-y" style={{ borderColor: '#ECE8E3' }}>
               {loading ? (
-                <tr><td colSpan={canManage ? 5 : 4} className="px-6 py-10 text-center text-sm" style={{ color: '#6B7280' }}>Loading...</td></tr>
+                <tr><td colSpan={canManage ? 4 : 3} className="px-6 py-10 text-center text-sm" style={{ color: '#6B7280' }}>Loading...</td></tr>
               ) : profiles.length === 0 ? (
-                <tr><td colSpan={canManage ? 5 : 4} className="px-6 py-10 text-center text-sm" style={{ color: '#6B7280' }}>No product profiles found.</td></tr>
+                <tr><td colSpan={canManage ? 4 : 3} className="px-6 py-10 text-center text-sm" style={{ color: '#6B7280' }}>No product profiles found.</td></tr>
               ) : (
                 profiles.map((profile) => (
                   <tr
@@ -146,21 +151,17 @@ const ProductProfilesPage = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold" style={{ color: '#2F2F2F' }}>{profile.department?.name || 'Unknown'}</div>
-                      <div className="text-xs" style={{ color: '#6B7280' }}>{profile.department?.code}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(profile.lifecycle_status)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono" style={{ color: '#2F2F2F' }}>
-                      {Number(profile.carbonFootprint).toLocaleString()}
+                      {Number(profile.carbon_footprint || 0).toLocaleString()}
                     </td>
                     {canManage && (
                       <td className="px-6 py-4 whitespace-nowrap text-right space-x-3">
                         <button onClick={() => handleOpenModal(profile)} className="transition-colors" style={{ color: '#9BBDAF' }} onMouseEnter={e => e.currentTarget.style.color = '#5E9E6F'} onMouseLeave={e => e.currentTarget.style.color = '#9BBDAF'}>
                           <Edit2 className="h-4 w-4 inline" />
                         </button>
-                        <button onClick={() => handleDelete(profile.id)} className="transition-colors" style={{ color: '#E96A6A88' }} onMouseEnter={e => e.currentTarget.style.color = '#E96A6A'} onMouseLeave={e => e.currentTarget.style.color = '#E96A6A88'}>
+                        <button onClick={() => setDeleteConfirmId(profile.id)} className="transition-colors" style={{ color: '#E96A6A88' }} onMouseEnter={e => e.currentTarget.style.color = '#E96A6A'} onMouseLeave={e => e.currentTarget.style.color = '#E96A6A88'}>
                           <Trash2 className="h-4 w-4 inline" />
                         </button>
                       </td>
@@ -206,6 +207,34 @@ const ProductProfilesPage = () => {
                   onCancel={handleCloseModal}
                   isLoading={isSubmitting}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed z-50 inset-0 overflow-y-auto" role="dialog" aria-modal="true">
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setDeleteConfirmId(null)} />
+            <div className="relative bg-white rounded-2xl shadow-lg max-w-sm w-full border p-6" style={{ borderColor: '#ECE8E3' }}>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-12 w-12 rounded-full flex items-center justify-center mb-4" style={{ background: '#E96A6A22' }}>
+                  <AlertCircle className="h-6 w-6" style={{ color: '#E96A6A' }} />
+                </div>
+                <h3 className="text-lg font-bold mb-2" style={{ color: '#2F2F2F' }}>Delete Profile?</h3>
+                <p className="text-sm mb-6" style={{ color: '#6B7280' }}>
+                  Are you sure you want to delete this product profile? This action cannot be undone.
+                </p>
+                <div className="flex space-x-3 w-full">
+                  <button onClick={() => setDeleteConfirmId(null)} disabled={isSubmitting} className="btn-secondary flex-1">
+                    Cancel
+                  </button>
+                  <button onClick={handleDelete} disabled={isSubmitting} className="btn-primary flex-1" style={{ background: '#E96A6A', borderColor: '#E96A6A', color: 'white' }}>
+                    {isSubmitting ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

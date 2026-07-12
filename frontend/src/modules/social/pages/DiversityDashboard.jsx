@@ -70,25 +70,43 @@ export default function DiversityDashboard() {
     });
   };
 
-  // Mock data processing since we might not have enough seeded data for a rich chart
+  // Dynamic Data Calculation
+  const totalMetricsLogged = metrics.length;
+  const uniqueDepartments = new Set(metrics.map(m => m.departmentId)).size;
+  const averageIndex = metrics.length > 0 
+    ? (metrics.reduce((acc, m) => acc + Number(m.metricValue), 0) / metrics.length).toFixed(1)
+    : 0;
+
   const genderData = metrics.filter(m => m.metricType === 'Gender');
   const hasGenderData = genderData.length > 0;
 
   const pieChartData = {
-    labels: hasGenderData ? genderData.map(m => m.notes) : ['Male', 'Female', 'Non-Binary'],
+    labels: hasGenderData ? genderData.map(m => m.notes) : ['No Data Available'],
     datasets: [{
-      data: hasGenderData ? genderData.map(m => m.metricValue) : [45, 50, 5],
-      backgroundColor: ['#9BBDAF', '#F8C7AE', '#836A78'],
+      data: hasGenderData ? genderData.map(m => m.metricValue) : [1],
+      backgroundColor: hasGenderData ? ['#9BBDAF', '#F8C7AE', '#836A78', '#5E9E6F', '#E96A6A'] : ['#E5E7EB'],
       borderWidth: 0,
     }]
   };
 
+  const deptMap = {};
+  metrics.forEach(m => {
+    const deptName = m.department?.name || 'Unknown';
+    if (!deptMap[deptName]) deptMap[deptName] = { total: 0, count: 0 };
+    deptMap[deptName].total += Number(m.metricValue);
+    deptMap[deptName].count += 1;
+  });
+  
+  const deptLabels = Object.keys(deptMap);
+  const deptScores = deptLabels.map(dept => deptMap[dept].total / deptMap[dept].count);
+  const hasBarData = deptLabels.length > 0;
+
   const barChartData = {
-    labels: ['Engineering', 'Sales', 'HR', 'Marketing'],
+    labels: hasBarData ? deptLabels : ['No Data'],
     datasets: [{
-      label: 'Diversity Score',
-      data: [78, 85, 92, 88],
-      backgroundColor: '#9BBDAF',
+      label: 'Average Metric Score (%)',
+      data: hasBarData ? deptScores : [0],
+      backgroundColor: hasBarData ? '#9BBDAF' : '#E5E7EB',
       borderRadius: 4,
     }]
   };
@@ -117,8 +135,8 @@ export default function DiversityDashboard() {
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Total Workforce</p>
-            <p className="text-2xl font-bold text-gray-900">2,450</p>
+            <p className="text-sm font-medium text-gray-500">Metrics Logged</p>
+            <p className="text-2xl font-bold text-gray-900">{totalMetricsLogged}</p>
           </div>
         </div>
         
@@ -128,7 +146,7 @@ export default function DiversityDashboard() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">Departments Tracked</p>
-            <p className="text-2xl font-bold text-gray-900">12</p>
+            <p className="text-2xl font-bold text-gray-900">{uniqueDepartments}</p>
           </div>
         </div>
 
@@ -137,8 +155,8 @@ export default function DiversityDashboard() {
             <TrendingUp className="w-6 h-6 text-purple-600" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Overall Diversity Index</p>
-            <p className="text-2xl font-bold text-gray-900">84/100</p>
+            <p className="text-sm font-medium text-gray-500">Overall Average Score</p>
+            <p className="text-2xl font-bold text-gray-900">{averageIndex}%</p>
           </div>
         </div>
       </div>
@@ -152,7 +170,7 @@ export default function DiversityDashboard() {
         </div>
 
         <div className="card">
-          <h3 className="text-lg font-bold text-gray-900 mb-6">Diversity Score by Department</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Average Metric Score by Department</h3>
           <div className="h-64">
             <Bar 
               data={barChartData} 

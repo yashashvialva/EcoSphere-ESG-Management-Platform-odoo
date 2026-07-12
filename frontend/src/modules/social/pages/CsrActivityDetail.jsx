@@ -248,7 +248,7 @@ export default function CsrActivityDetail() {
 
       {/* Admin/Organizer Participation List View */}
       {activity.status === 'PUBLISHED' && (
-        <ParticipationList activityId={id} initialParticipations={participations} />
+        <ParticipationList activityId={id} initialParticipations={participations} isAdmin={isAdmin} />
       )}
 
       {/* Edit Modal */}

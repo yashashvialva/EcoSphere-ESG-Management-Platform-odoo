@@ -1,34 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../store/authStore';
+import api from '../../../services/api';
 
 const ProductProfileForm = ({ initialData = null, onSubmit, onCancel, isLoading }) => {
   const { user } = useAuth();
+  const [emissionFactors, setEmissionFactors] = useState([]);
   
   const [formData, setFormData] = useState({
     departmentId: user?.departmentId || '',
     name: '',
-    description: '',
-    lifecycleStatus: 'DESIGN',
-    carbonFootprint: 0,
+    emissionFactorId: '',
+    recyclable: false,
+    sustainabilityRating: 0,
   });
 
   useEffect(() => {
+    // Fetch emission factors for the dropdown
+    api.get('/environmental/emission-factors')
+      .then(res => {
+        if (res.data?.data) {
+          setEmissionFactors(res.data.data);
+        } else if (res.data) {
+           setEmissionFactors(res.data);
+        }
+      })
+      .catch(err => console.error('Failed to load emission factors', err));
+
     if (initialData) {
       setFormData({
         departmentId: initialData.department_id || user?.departmentId || '',
         name: initialData.name || '',
-        description: initialData.description || '',
-        lifecycleStatus: initialData.lifecycleStatus || 'DESIGN',
-        carbonFootprint: initialData.carbonFootprint || 0,
+        emissionFactorId: initialData.emissionFactorId || '',
+        recyclable: initialData.recyclable || false,
+        sustainabilityRating: initialData.sustainabilityRating || 0,
       });
     }
   }, [initialData, user]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -36,10 +49,14 @@ const ProductProfileForm = ({ initialData = null, onSubmit, onCancel, isLoading 
     e.preventDefault();
     const submitData = {
       ...formData,
-      carbonFootprint: parseFloat(formData.carbonFootprint),
+      sustainabilityRating: parseInt(formData.sustainabilityRating, 10),
     };
     
-    // If we're updating, we don't send departmentId
+    // Clear empty emission factor ID so fallback logic in repo handles it
+    if (!submitData.emissionFactorId) {
+      delete submitData.emissionFactorId;
+    }
+    
     if (initialData) {
       delete submitData.departmentId;
     }
@@ -80,52 +97,49 @@ const ProductProfileForm = ({ initialData = null, onSubmit, onCancel, isLoading 
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          rows={3}
-          value={formData.description}
+        <label htmlFor="emissionFactorId" className="block text-sm font-medium text-gray-700">Emission Factor (Category)</label>
+        <select
+          id="emissionFactorId"
+          name="emissionFactorId"
+          value={formData.emissionFactorId}
           onChange={handleChange}
           className="mt-1 input-field"
-          placeholder="Optional product description"
-        />
+        >
+          <option value="">-- Select a Category --</option>
+          {Array.isArray(emissionFactors) && emissionFactors.map(ef => (
+            <option key={ef.id} value={ef.id}>{ef.category} - {ef.source}</option>
+          ))}
+        </select>
       </div>
 
-      {initialData && (
-        <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-4 mt-2">
-          <div>
-            <label htmlFor="lifecycleStatus" className="block text-sm font-medium text-gray-700">Lifecycle Status</label>
-            <select
-              id="lifecycleStatus"
-              name="lifecycleStatus"
-              value={formData.lifecycleStatus}
-              onChange={handleChange}
-              required
-              className="mt-1 input-field"
-            >
-              <option value="DESIGN">Design Phase</option>
-              <option value="MANUFACTURING">Manufacturing</option>
-              <option value="DISTRIBUTION">Distribution</option>
-              <option value="END_OF_LIFE">End of Life</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="carbonFootprint" className="block text-sm font-medium text-gray-700">Carbon Footprint (kg CO2e)</label>
-            <input
-              type="number"
-              id="carbonFootprint"
-              name="carbonFootprint"
-              step="0.01"
-              min="0"
-              value={formData.carbonFootprint}
-              onChange={handleChange}
-              required
-              className="mt-1 input-field"
-            />
-          </div>
-        </div>
-      )}
+      <div className="flex items-center mt-4">
+        <input
+          type="checkbox"
+          id="recyclable"
+          name="recyclable"
+          checked={formData.recyclable}
+          onChange={handleChange}
+          className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+        />
+        <label htmlFor="recyclable" className="ml-2 block text-sm text-gray-900">
+          Is this product recyclable?
+        </label>
+      </div>
+
+      <div>
+        <label htmlFor="sustainabilityRating" className="block text-sm font-medium text-gray-700">Sustainability Rating (0 - 5)</label>
+        <input
+          type="number"
+          id="sustainabilityRating"
+          name="sustainabilityRating"
+          min="0"
+          max="5"
+          value={formData.sustainabilityRating}
+          onChange={handleChange}
+          required
+          className="mt-1 input-field"
+        />
+      </div>
 
       <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
         <button
