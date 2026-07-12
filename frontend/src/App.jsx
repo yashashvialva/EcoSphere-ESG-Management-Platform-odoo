@@ -13,8 +13,7 @@ import EsgGoalsPage from './modules/environmental/pages/EsgGoalsPage';
 import ProductProfilesPage from './modules/environmental/pages/ProductProfilesPage';
 import EnvironmentalDashboard from './modules/environmental/pages/EnvironmentalDashboard';
 
-// Placeholder Pages (To be implemented)
-const LoginPage = () => <div className="p-8">Login Page Placeholder</div>;
+import LoginPage from './modules/auth/pages/LoginPage';
 
 const ProtectedRoute = ({ children, requiredPermission }) => {
   const { isAuthenticated, loading, hasPermission } = useAuth();
