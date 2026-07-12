@@ -24,6 +24,8 @@ const MainLayout = () => {
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Emission Factors', href: '/environmental/emission-factors', icon: Settings, permission: 'environmental.read' },
     { name: 'Carbon Transactions', href: '/environmental/carbon-transactions', icon: FileText, permission: 'environmental.read' },
+    { name: 'ESG Goals', href: '/environmental/esg-goals', icon: Settings, permission: 'environmental.read' },
+    { name: 'Product Profiles', href: '/environmental/product-profiles', icon: FileText, permission: 'environmental.read' },
     { name: 'Social', href: '/social', icon: Users, permission: 'social.read' },
     { name: 'Governance', href: '/governance', icon: ShieldCheck, permission: 'governance.read' },
     { name: 'Gamification', href: '/gamification', icon: Award, permission: 'gamification.read' },
