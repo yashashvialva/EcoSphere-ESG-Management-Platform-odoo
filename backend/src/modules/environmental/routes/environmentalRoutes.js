@@ -4,6 +4,7 @@ const emissionFactorController = require('../controllers/emissionFactorControlle
 const carbonTransactionController = require('../controllers/carbonTransactionController');
 const esgGoalController = require('../controllers/esgGoalController');
 const productProfileController = require('../controllers/productProfileController');
+const dashboardController = require('../controllers/dashboardController');
 const { validate } = require('../../../../middleware/validate');
 const { authenticate } = require('../../../../middleware/auth');
 const { authorize } = require('../../../../middleware/authorize');
@@ -126,6 +127,13 @@ router.delete(
   '/product-profiles/:id',
   authorize('environmental.manage'),
   productProfileController.delete
+);
+
+// --- Dashboard ---
+router.get(
+  '/dashboard',
+  authorize('environmental.read'),
+  dashboardController.getDashboard
 );
 
 module.exports = router;
