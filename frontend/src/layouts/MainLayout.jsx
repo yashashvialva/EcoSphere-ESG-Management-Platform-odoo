@@ -8,6 +8,7 @@ export default function MainLayout() {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Challenges', href: '/gamification/challenges', icon: Award },
     { name: 'CSR Activities', href: '/social/csr-activities', icon: Leaf },
     { name: 'Training', href: '/social/training', icon: BookOpen },
     { name: 'Diversity', href: '/social/diversity', icon: Users },
