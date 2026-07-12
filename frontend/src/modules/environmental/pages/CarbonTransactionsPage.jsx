@@ -188,18 +188,23 @@ const CarbonTransactionsPage = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed z-50 inset-0 overflow-y-auto" role="dialog" aria-modal="true">
-          <div className="flex items-center justify-center min-h-screen p-4">
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-            <div className="card max-w-lg w-full relative z-10">
-              <div className="px-6 pt-6 pb-4">
-                <div className="flex items-center mb-4 space-x-3">
-                  <div className="p-2 rounded-xl" style={{ background: '#9BBDAF22' }}>
-                    <Recycle className="h-5 w-5" style={{ color: '#5E9E6F' }} />
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
+          {/* Backdrop */}
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
+          
+          {/* Scrollable Container */}
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full justify-center p-4 pt-16 sm:pt-24 pb-16">
+              <div className="relative bg-white rounded-2xl shadow-lg max-w-lg w-full border h-fit" style={{ borderColor: '#ECE8E3' }}>
+                <div className="px-6 pt-6 pb-4">
+                  <div className="flex items-center mb-4 space-x-3">
+                    <div className="p-2 rounded-xl" style={{ background: '#9BBDAF22' }}>
+                      <Recycle className="h-5 w-5" style={{ color: '#5E9E6F' }} />
+                    </div>
+                    <h3 className="text-lg font-bold" style={{ color: '#2F2F2F' }}>Record Carbon Transaction</h3>
                   </div>
-                  <h3 className="text-lg font-bold" style={{ color: '#2F2F2F' }}>Record Carbon Transaction</h3>
+                  <CarbonTransactionForm onSubmit={handleSubmit} onCancel={() => setIsModalOpen(false)} isLoading={isSubmitting} />
                 </div>
-                <CarbonTransactionForm onSubmit={handleSubmit} onCancel={() => setIsModalOpen(false)} isLoading={isSubmitting} />
               </div>
             </div>
           </div>

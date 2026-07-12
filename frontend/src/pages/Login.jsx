@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('admin@ecosphere.com');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('Admin@123');
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, password);
+      await login({ email, password });
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Login failed');

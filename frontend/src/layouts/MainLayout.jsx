@@ -25,7 +25,10 @@ import {
   Shield,
   FileText,
   ClipboardCheck,
-  CheckCircle
+  CheckCircle,
+  Trophy,
+  Medal,
+  Gift
 } from 'lucide-react';
 
 // Static sample notifications
@@ -60,6 +63,8 @@ const MainLayout = () => {
 
   const navigation = [
     { name: 'Dashboard',           href: '/dashboard',                          icon: LayoutDashboard },
+    
+    // Environmental Links
     { name: 'Emission Factors',    href: '/environmental/emission-factors',      icon: Leaf,        permission: 'environmental.read' },
     { name: 'Carbon Transactions', href: '/environmental/carbon-transactions',   icon: Recycle,     permission: 'environmental.read' },
     { name: 'ESG Goals',           href: '/environmental/esg-goals',             icon: Target,      permission: 'environmental.read' },
@@ -70,13 +75,18 @@ const MainLayout = () => {
     { name: 'Training', href: '/social/training', icon: BookOpen },
     { name: 'Diversity', href: '/social/diversity', icon: Users },
     
+    // Gamification Links
+    { name: 'Leaderboard',         href: '/gamification/leaderboard',            icon: Trophy,      permission: 'gamification.read' },
+    { name: 'Challenges',          href: '/gamification/challenges',             icon: Award,       permission: 'gamification.read' },
+    { name: 'Badges',              href: '/gamification/badges',                 icon: Medal,       permission: 'gamification.read' },
+    { name: 'Rewards',             href: '/gamification/rewards',                icon: Gift,        permission: 'gamification.read' },
+    
     { name: 'Governance',          href: '/governance',                          icon: ShieldCheck, permission: 'governance.read', children: [
       { name: 'Policies', href: '/governance/policies', icon: FileText },
       { name: 'Audits', href: '/governance/audits', icon: ClipboardCheck },
       { name: 'Compliance', href: '/governance/compliance-issues', icon: AlertTriangle },
       { name: 'Acknowledgements', href: '/governance/acknowledgements', icon: CheckCircle },
     ]},
-    { name: 'Gamification',        href: '/gamification',                        icon: Award,       permission: 'gamification.read' },
     { name: 'Settings',            href: '/settings',                            icon: Settings,    permission: 'settings.manage' },
   ];
 

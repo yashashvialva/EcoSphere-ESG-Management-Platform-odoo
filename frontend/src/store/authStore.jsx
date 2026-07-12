@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const res = await authService.login(credentials);
       localStorage.setItem('token', res.token);
-      setUser(res.employee);
+      setUser(res.user);
       setError(null);
       return res;
     } catch (err) {
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const res = await authService.register(userData);
       localStorage.setItem('token', res.token);
-      setUser(res.employee);
+      setUser(res.user);
       setError(null);
       return res;
     } catch (err) {
