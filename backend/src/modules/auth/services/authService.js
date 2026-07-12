@@ -95,7 +95,7 @@ class AuthService {
       department: employee.department?.name || null,
       departmentId: employee.departmentId,
       totalXp: employee.totalXp,
-      permissions: employee.role?.permissions?.map((rp) => rp.permission.code) || [],
+      permissions: employee.role?.rolePermissions?.map((rp) => rp.permission.code) || [],
     };
   }
 }
