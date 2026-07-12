@@ -53,6 +53,7 @@ const validate = (schemas) => {
     }
 
     if (errors.length > 0) {
+      console.error('❌ Zod Validation Errors:', JSON.stringify(errors, null, 2));
       return next(new ValidationError('Request validation failed', errors));
     }
 

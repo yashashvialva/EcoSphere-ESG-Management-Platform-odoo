@@ -2,8 +2,8 @@ const { z } = require('zod');
 const { CSR_STATUS } = require('../constants/csr.constants');
 
 const createCsrActivitySchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters").max(150),
-  description: z.string().min(10, "Description must be at least 10 characters").optional(),
+  title: z.string().min(3, "Title must be at least 3 characters").max(150),
+  description: z.string().optional(),
   categoryId: z.string().uuid("Invalid category ID").optional(),
   startDate: z.string().datetime({ message: "Invalid ISO datetime string for start date" }),
   endDate: z.string().datetime({ message: "Invalid ISO datetime string for end date" }),
@@ -11,8 +11,8 @@ const createCsrActivitySchema = z.object({
 });
 
 const updateCsrActivitySchema = z.object({
-  title: z.string().min(5).max(150).optional(),
-  description: z.string().min(10).optional(),
+  title: z.string().min(3).max(150).optional(),
+  description: z.string().optional(),
   categoryId: z.string().uuid().optional(),
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
