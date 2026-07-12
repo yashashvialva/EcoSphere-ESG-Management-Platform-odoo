@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Award, BookOpen, Leaf, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Award, BookOpen, Leaf, LogOut, Trophy } from 'lucide-react';
 
 export default function MainLayout() {
   const { user, logout } = useAuth();
@@ -8,6 +8,7 @@ export default function MainLayout() {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Leaderboard', href: '/gamification/leaderboard', icon: Trophy },
     { name: 'Challenges', href: '/gamification/challenges', icon: Award },
     { name: 'CSR Activities', href: '/social/csr-activities', icon: Leaf },
     { name: 'Training', href: '/social/training', icon: BookOpen },

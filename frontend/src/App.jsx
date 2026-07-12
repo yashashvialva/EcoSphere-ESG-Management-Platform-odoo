@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Login from './pages/Login'
 import Challenges from './pages/gamification/Challenges'
+import Leaderboard from './pages/gamification/Leaderboard'
 import { useAuth } from './context/AuthContext'
 
 // Stub pages for milestone 1
@@ -28,6 +29,7 @@ function App() {
         <Route index element={<Dashboard />} />
         {/* Gamification Routes */}
         <Route path="gamification/challenges" element={<Challenges />} />
+        <Route path="gamification/leaderboard" element={<Leaderboard />} />
         {/* Social Routes will be added here in Milestone 6 */}
       </Route>
     </Routes>
