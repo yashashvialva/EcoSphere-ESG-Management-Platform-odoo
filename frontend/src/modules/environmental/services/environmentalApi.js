@@ -79,6 +79,12 @@ const environmentalApi = {
     const response = await api.delete(`/environmental/product-profiles/${id}`);
     return response.data;
   },
+
+  // Dashboard
+  getDashboard: async (params) => {
+    const response = await api.get('/environmental/dashboard', { params });
+    return response.data;
+  },
 };
 
 export default environmentalApi;
