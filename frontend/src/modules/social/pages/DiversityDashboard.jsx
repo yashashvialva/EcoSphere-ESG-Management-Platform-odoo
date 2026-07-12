@@ -20,6 +20,17 @@ export default function DiversityDashboard() {
     reportingDate: new Date().toISOString().split('T')[0]
   });
 
+  // Custom Modal State
+  const [modal, setModal] = useState({ show: false, type: 'confirm', message: '', onConfirm: null });
+
+  const showConfirm = (message, onConfirm) => {
+    setModal({ show: true, type: 'confirm', message, onConfirm });
+  };
+
+  const showAlert = (message) => {
+    setModal({ show: true, type: 'alert', message, onConfirm: null });
+  };
+
   useEffect(() => {
     loadMetrics();
   }, []);
@@ -35,26 +46,28 @@ export default function DiversityDashboard() {
     }
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (!user?.departmentId) {
-        alert('You must be assigned to a department to submit metrics.');
-        return;
-      }
-      await socialApi.addDiversityMetric({
-        departmentId: user.departmentId,
-        metricType: formData.metricType,
-        notes: formData.notes,
-        metricValue: Number(formData.metricValue),
-        reportingDate: new Date(formData.reportingDate).toISOString()
-      });
-      alert('Snapshot added successfully!');
-      setShowAddModal(false);
-      loadMetrics();
-    } catch (error) {
-      alert(error.response?.data?.message || 'Failed to add snapshot');
+    if (!user?.departmentId) {
+      showAlert('You must be assigned to a department to submit metrics.');
+      return;
     }
+    showConfirm(`Are you sure you want to add this diversity metric snapshot?`, async () => {
+      try {
+        await socialApi.addDiversityMetric({
+          departmentId: user.departmentId,
+          metricType: formData.metricType,
+          notes: formData.notes,
+          metricValue: Number(formData.metricValue),
+          reportingDate: new Date(formData.reportingDate).toISOString()
+        });
+        showAlert('Snapshot added successfully!');
+        setShowAddModal(false);
+        loadMetrics();
+      } catch (error) {
+        showAlert(error.response?.data?.message || 'Failed to add snapshot');
+      }
+    });
   };
 
   // Mock data processing since we might not have enough seeded data for a rich chart
@@ -183,6 +196,36 @@ export default function DiversityDashboard() {
                 <button type="submit" className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Add</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {modal.show && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              {modal.type === 'confirm' ? 'Confirm Action' : 'Notification'}
+            </h3>
+            <p className="text-gray-600 text-sm mb-6">{modal.message}</p>
+            <div className="flex justify-end space-x-3">
+              {modal.type === 'confirm' && (
+                <button 
+                  onClick={() => setModal({ ...modal, show: false })}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  Cancel
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  setModal({ ...modal, show: false });
+                  if (modal.onConfirm) modal.onConfirm();
+                }}
+                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+              >
+                {modal.type === 'confirm' ? 'Confirm' : 'OK'}
+              </button>
+            </div>
           </div>
         </div>
       )}

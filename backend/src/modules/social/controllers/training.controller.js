@@ -22,7 +22,7 @@ class TrainingController {
 
   async getTrainings(req, res, next) {
     try {
-      const trainings = await trainingService.getAllTrainings();
+      const trainings = await trainingService.getAllTrainings(req.user.id);
       return success(res, trainings, 'Trainings retrieved');
     } catch (error) {
       next(error);

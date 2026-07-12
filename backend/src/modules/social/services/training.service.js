@@ -3,6 +3,7 @@ const { NotFoundError, BusinessRuleError } = require('../../../shared/errors');
 const { CSR_STATUS } = require('../constants/csr.constants');
 const { awardXp } = require('../../../shared/services/xpService');
 const notificationService = require('../../../shared/notifications/notificationService');
+const prisma = require('../../../config/prisma');
 
 class TrainingService {
   async createTraining(data) {
@@ -18,8 +19,17 @@ class TrainingService {
     return trainingRepository.update(id, data);
   }
 
-  async getAllTrainings() {
-    return trainingRepository.findAll();
+  async getAllTrainings(employeeId) {
+    const trainings = await trainingRepository.findAll();
+    const completions = await prisma.trainingCompletion.findMany({
+      where: { employeeId }
+    });
+    const completedIds = new Set(completions.map(c => c.trainingId));
+
+    return trainings.map(t => ({
+      ...t,
+      isCompleted: completedIds.has(t.id)
+    }));
   }
 
   async completeTraining(employeeId, trainingId, score) {

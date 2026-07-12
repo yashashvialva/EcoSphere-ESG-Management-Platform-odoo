@@ -7,6 +7,17 @@ export default function TrainingList() {
   const [trainings, setTrainings] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  
+  // Custom Modal State
+  const [modal, setModal] = useState({ show: false, type: 'confirm', message: '', onConfirm: null });
+
+  const showConfirm = (message, onConfirm) => {
+    setModal({ show: true, type: 'confirm', message, onConfirm });
+  };
+
+  const showAlert = (message) => {
+    setModal({ show: true, type: 'alert', message, onConfirm: null });
+  };
 
   useEffect(() => {
     loadTrainings();
@@ -23,14 +34,16 @@ export default function TrainingList() {
     }
   };
 
-  const handleComplete = async (trainingId) => {
-    try {
-      await socialApi.completeTraining(trainingId, 100); // hardcode score 100 for UI demo
-      alert('Training completed successfully! XP Awarded.');
-      loadTrainings(); // reload to reflect changes
-    } catch (error) {
-      alert(error.response?.data?.message || 'Error completing training');
-    }
+  const handleCompleteClick = (trainingId, title) => {
+    showConfirm(`Are you sure you want to mark "${title}" as completed?`, async () => {
+      try {
+        await socialApi.completeTraining(trainingId, 100); // hardcode score 100 for UI demo
+        showAlert('Training completed successfully! XP Awarded.');
+        loadTrainings(); // reload to reflect changes
+      } catch (error) {
+        showAlert(error.response?.data?.message || 'Error completing training');
+      }
+    });
   };
 
   if (loading) return <div className="p-8 text-center text-gray-500">Loading trainings...</div>;
@@ -59,13 +72,20 @@ export default function TrainingList() {
                 {training.pointsAwarded} XP
               </div>
 
-              <button 
-                onClick={() => handleComplete(training.id)}
-                className="w-full flex justify-center items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-sm"
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Mark as Completed
-              </button>
+              {training.isCompleted ? (
+                <div className="w-full flex justify-center items-center px-4 py-2.5 bg-green-50 text-green-700 border border-green-200 rounded-lg font-semibold text-sm cursor-default">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Completed
+                </div>
+              ) : (
+                <button 
+                  onClick={() => handleCompleteClick(training.id, training.title)}
+                  className="w-full flex justify-center items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-sm"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Mark as Completed
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -76,6 +96,36 @@ export default function TrainingList() {
           </div>
         )}
       </div>
+
+      {modal.show && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              {modal.type === 'confirm' ? 'Confirm Action' : 'Notification'}
+            </h3>
+            <p className="text-gray-600 text-sm mb-6">{modal.message}</p>
+            <div className="flex justify-end space-x-3">
+              {modal.type === 'confirm' && (
+                <button 
+                  onClick={() => setModal({ ...modal, show: false })}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  Cancel
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  setModal({ ...modal, show: false });
+                  if (modal.onConfirm) modal.onConfirm();
+                }}
+                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+              >
+                {modal.type === 'confirm' ? 'Confirm' : 'OK'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

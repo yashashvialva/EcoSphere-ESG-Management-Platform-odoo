@@ -16,6 +16,17 @@ export default function CsrActivityDetail() {
   const [joining, setJoining] = useState(false);
   const [proofUrl, setProofUrl] = useState('');
 
+  // Custom Modal State
+  const [modal, setModal] = useState({ show: false, type: 'confirm', message: '', onConfirm: null });
+
+  const showConfirm = (message, onConfirm) => {
+    setModal({ show: true, type: 'confirm', message, onConfirm });
+  };
+
+  const showAlert = (message) => {
+    setModal({ show: true, type: 'alert', message, onConfirm: null });
+  };
+
   useEffect(() => {
     loadData();
   }, [id]);
@@ -35,17 +46,19 @@ export default function CsrActivityDetail() {
     }
   };
 
-  const handleJoin = async () => {
-    setJoining(true);
-    try {
-      await socialApi.joinCsrActivity(id, proofUrl || undefined);
-      alert('Successfully joined the CSR activity! Pending approval.');
-      loadData();
-    } catch (error) {
-      alert(error.response?.data?.message || 'Error joining activity');
-    } finally {
-      setJoining(false);
-    }
+  const handleJoinClick = () => {
+    showConfirm(`Are you sure you want to join the activity "${activity.title}"?`, async () => {
+      setJoining(true);
+      try {
+        await socialApi.joinCsrActivity(id, proofUrl || undefined);
+        showAlert('Successfully joined the CSR activity! Pending approval.');
+        loadData();
+      } catch (error) {
+        showAlert(error.response?.data?.message || 'Error joining activity');
+      } finally {
+        setJoining(false);
+      }
+    });
   };
 
   if (loading) return <div className="p-8 text-center text-gray-500">Loading activity...</div>;
@@ -106,7 +119,7 @@ export default function CsrActivityDetail() {
                   className="px-4 py-2 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
                 />
                 <button 
-                  onClick={handleJoin}
+                  onClick={handleJoinClick}
                   disabled={joining}
                   className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-sm"
                 >
@@ -126,6 +139,36 @@ export default function CsrActivityDetail() {
 
       {/* Admin/Organizer Participation List View */}
       <ParticipationList activityId={id} initialParticipations={participations} />
+
+      {modal.show && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              {modal.type === 'confirm' ? 'Confirm Action' : 'Notification'}
+            </h3>
+            <p className="text-gray-600 text-sm mb-6">{modal.message}</p>
+            <div className="flex justify-end space-x-3">
+              {modal.type === 'confirm' && (
+                <button 
+                  onClick={() => setModal({ ...modal, show: false })}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  Cancel
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  setModal({ ...modal, show: false });
+                  if (modal.onConfirm) modal.onConfirm();
+                }}
+                className="px-5 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+              >
+                {modal.type === 'confirm' ? 'Confirm' : 'OK'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
