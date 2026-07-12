@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const prisma = require('../../config/prisma');
-const config = require('../../config/env');
-const { AuthenticationError, ConflictError, NotFoundError } = require('../../shared/errors');
+const prisma = require('../../../config/prisma');
+const config = require('../../../config/env');
+const { AuthenticationError, ConflictError, NotFoundError } = require('../../../shared/errors');
 
 const login = async (email, password) => {
   const employee = await prisma.employee.findUnique({
