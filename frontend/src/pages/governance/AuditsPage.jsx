@@ -149,7 +149,7 @@ export default function AuditsPage() {
                 {audits.map((a) => (
                   <tr key={a.id} className="hover:bg-emerald-50/40 transition-colors">
                     <td className="px-6 py-4 text-sm font-medium text-slate-800 truncate max-w-[200px]">{a.title}</td>
-                    <td className="px-6 py-4 text-sm font-medium text-slate-500">{a.department || '—'}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-slate-500">{a.department ? a.department.name : '—'}</td>
                     <td className="px-6 py-4"><TypeBadge type={a.auditType} /></td>
                     <td className="px-6 py-4 text-sm font-medium text-slate-500 whitespace-nowrap">
                       {a.auditorEmployee ? `${a.auditorEmployee.firstName} ${a.auditorEmployee.lastName}` : '—'}

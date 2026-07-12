@@ -88,7 +88,7 @@ export default function AuditDetailPage() {
   }
 
   const info = [
-    { label: 'Department', value: audit.department || '—', icon: Building },
+    { label: 'Department', value: audit.department ? audit.department.name : '—', icon: Building },
     { label: 'Auditor', value: audit.auditorEmployee ? `${audit.auditorEmployee.firstName} ${audit.auditorEmployee.lastName}` : '—', icon: User },
     { label: 'Scheduled Date', value: audit.scheduledDate ? new Date(audit.scheduledDate).toLocaleDateString() : '—', icon: Calendar },
     { label: 'Completed Date', value: audit.completedDate ? new Date(audit.completedDate).toLocaleDateString() : '—', icon: Calendar },
