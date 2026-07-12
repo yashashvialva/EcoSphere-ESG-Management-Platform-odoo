@@ -1,4 +1,4 @@
-const prisma = require('../../../../config/prisma');
+const prisma = require('../../../config/prisma');
 
 class ProductProfileRepository {
   async findAll({ skip, take, departmentId }) {
