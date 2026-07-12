@@ -1,4 +1,4 @@
-const prisma = require('../../../../config/prisma');
+const prisma = require('../../../config/prisma');
 
 class DashboardRepository {
   /**
@@ -9,17 +9,17 @@ class DashboardRepository {
     const endDate = new Date(`${year + 1}-01-01`);
 
     const where = {
-      activity_date: { gte: startDate, lt: endDate },
+      transaction_date: { gte: startDate, lt: endDate },
     };
     if (departmentId) where.department_id = departmentId;
 
     const transactions = await prisma.carbonTransaction.findMany({
       where,
       select: {
-        activity_date: true,
+        transaction_date: true,
         emission_value: true,
       },
-      orderBy: { activity_date: 'asc' },
+      orderBy: { transaction_date: 'asc' },
     });
 
     // Aggregate by month
@@ -30,7 +30,7 @@ class DashboardRepository {
     }));
 
     transactions.forEach((t) => {
-      const month = new Date(t.activity_date).getMonth();
+      const month = new Date(t.transaction_date).getMonth();
       monthlyData[month].totalEmissions += Number(t.emission_value);
       monthlyData[month].count += 1;
     });
@@ -49,14 +49,14 @@ class DashboardRepository {
       where,
       include: {
         emission_factor: {
-          select: { category: true },
+          select: { source: true },
         },
       },
     });
 
     const categoryMap = {};
     transactions.forEach((t) => {
-      const category = t.emission_factor?.category || 'Unknown';
+      const category = t.emission_factor?.source || 'Unknown';
       if (!categoryMap[category]) {
         categoryMap[category] = { category, totalEmissions: 0, count: 0 };
       }
@@ -111,7 +111,7 @@ class DashboardRepository {
         _sum: { emission_value: true },
       }),
       prisma.carbonTransaction.count({ where: txWhere }),
-      prisma.eSGGoal.count({ where: { ...goalWhere, status: { in: ['ON_TRACK', 'AT_RISK'] } } }),
+      prisma.esgGoal.count({ where: { ...goalWhere, status: { in: ['ON_TRACK', 'AT_RISK'] } } }),
       prisma.productProfile.count({ where: profileWhere }),
     ]);
 
@@ -130,7 +130,7 @@ class DashboardRepository {
     const where = {};
     if (departmentId) where.department_id = departmentId;
 
-    const goals = await prisma.eSGGoal.findMany({
+    const goals = await prisma.esgGoal.findMany({
       where,
       include: { department: { select: { name: true } } },
       orderBy: { deadline: 'asc' },
