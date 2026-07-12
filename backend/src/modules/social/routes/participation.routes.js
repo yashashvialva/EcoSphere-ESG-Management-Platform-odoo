@@ -9,12 +9,12 @@ const router = express.Router();
 router.use(authenticate);
 
 // Employee joins an activity
-router.post('/', validate(createParticipationSchema), participationController.joinActivity);
+router.post('/', validate({ body: createParticipationSchema }), participationController.joinActivity);
 
 // Get all participations for an activity
 router.get('/activity/:activityId', participationController.getActivityParticipations);
 
 // Admin/Organizer evaluates a participation (Approves/Rejects)
-router.patch('/:id/evaluate', validate(evaluateParticipationSchema), participationController.evaluateParticipation);
+router.patch('/:id/evaluate', validate({ body: evaluateParticipationSchema }), participationController.evaluateParticipation);
 
 module.exports = router;

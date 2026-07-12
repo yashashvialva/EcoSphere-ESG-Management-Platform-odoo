@@ -3,6 +3,7 @@ import { socialApi } from '../services/socialApi';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
 import { Users, Building2, TrendingUp, Plus } from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
@@ -10,6 +11,14 @@ export default function DiversityDashboard() {
   const [metrics, setMetrics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const { user } = useAuth();
+
+  const [formData, setFormData] = useState({
+    metricType: 'Gender',
+    notes: 'Female',
+    metricValue: 50,
+    reportingDate: new Date().toISOString().split('T')[0]
+  });
 
   useEffect(() => {
     loadMetrics();
@@ -26,12 +35,34 @@ export default function DiversityDashboard() {
     }
   };
 
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!user?.departmentId) {
+        alert('You must be assigned to a department to submit metrics.');
+        return;
+      }
+      await socialApi.addDiversityMetric({
+        departmentId: user.departmentId,
+        metricType: formData.metricType,
+        notes: formData.notes,
+        metricValue: Number(formData.metricValue),
+        reportingDate: new Date(formData.reportingDate).toISOString()
+      });
+      alert('Snapshot added successfully!');
+      setShowAddModal(false);
+      loadMetrics();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to add snapshot');
+    }
+  };
+
   // Mock data processing since we might not have enough seeded data for a rich chart
   const genderData = metrics.filter(m => m.metricType === 'Gender');
   const hasGenderData = genderData.length > 0;
 
   const pieChartData = {
-    labels: hasGenderData ? genderData.map(m => m.metricName) : ['Male', 'Female', 'Non-Binary'],
+    labels: hasGenderData ? genderData.map(m => m.notes) : ['Male', 'Female', 'Non-Binary'],
     datasets: [{
       data: hasGenderData ? genderData.map(m => m.metricValue) : [45, 50, 5],
       backgroundColor: ['#3b82f6', '#ec4899', '#8b5cf6'],
@@ -123,18 +154,35 @@ export default function DiversityDashboard() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
-            <h2 className="text-xl font-bold mb-4 text-gray-900">Add Diversity Snapshot</h2>
-            <p className="text-sm text-gray-500 mb-6">In a real environment, this form would capture detailed diversity metrics for a specific department and date.</p>
-            
-            <div className="flex justify-end space-x-3 mt-8">
-              <button 
-                onClick={() => setShowAddModal(false)}
-                className="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50"
-              >
-                Close
-              </button>
-            </div>
+          <div className="bg-white rounded-xl p-8 w-full max-w-md shadow-xl">
+            <h2 className="text-xl font-bold mb-6 text-gray-900">Add Diversity Snapshot</h2>
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Metric Type</label>
+                <select value={formData.metricType} onChange={e => setFormData({...formData, metricType: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                  <option value="Gender">Gender</option>
+                  <option value="Ethnicity">Ethnicity</option>
+                  <option value="Age Group">Age Group</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category / Group (e.g. Female, Male)</label>
+                <input required type="text" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Metric Value (%)</label>
+                <input required type="number" min="0" max="100" value={formData.metricValue} onChange={e => setFormData({...formData, metricValue: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Reporting Date</label>
+                <input required type="date" value={formData.reportingDate} onChange={e => setFormData({...formData, reportingDate: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+              </div>
+              
+              <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-100">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Add</button>
+              </div>
+            </form>
           </div>
         </div>
       )}

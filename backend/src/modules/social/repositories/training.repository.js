@@ -36,7 +36,10 @@ class TrainingRepository {
       data: {
         employeeId,
         trainingId,
-        score
+        score,
+        status: 'COMPLETED',
+        completionPercentage: 100.00,
+        completedAt: new Date()
       }
     });
   }

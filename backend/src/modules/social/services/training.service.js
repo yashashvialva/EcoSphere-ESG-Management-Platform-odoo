@@ -25,8 +25,8 @@ class TrainingService {
   async completeTraining(employeeId, trainingId, score) {
     const training = await trainingRepository.findById(trainingId);
     if (!training) throw new NotFoundError('Training not found');
-    if (training.status !== CSR_STATUS.PUBLISHED) {
-      throw new BusinessRuleError('Can only complete published trainings');
+    if (training.status !== 'ACTIVE') {
+      throw new BusinessRuleError('Can only complete active trainings');
     }
 
     const existing = await trainingRepository.findCompletion(employeeId, trainingId);
@@ -39,12 +39,14 @@ class TrainingService {
     // Side effect: Award XP
     if (training.pointsAwarded > 0) {
       await awardXp(employeeId, training.pointsAwarded, `Completed Training: ${training.title}`);
-      await notificationService.createNotification(
+      await notificationService.createNotification({
         employeeId,
-        'TRAINING_COMPLETED',
-        `You completed ${training.title} and earned ${training.pointsAwarded} XP!`,
-        `/social/training`
-      );
+        type: 'TRAINING_COMPLETED',
+        title: 'Training Completed',
+        message: `You completed ${training.title} and earned ${training.pointsAwarded} XP!`,
+        relatedEntityType: 'TRAINING',
+        relatedEntityId: trainingId
+      });
     }
 
     return completion;

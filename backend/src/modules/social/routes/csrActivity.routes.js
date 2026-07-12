@@ -10,15 +10,15 @@ const router = express.Router();
 router.use(authenticate);
 
 // Get all CSR activities with filtering and pagination
-router.get('/', validate(queryCsrActivitiesSchema, 'query'), csrActivityController.getActivities);
+router.get('/', validate({ query: queryCsrActivitiesSchema }), csrActivityController.getActivities);
 
 // Get a single CSR activity by ID
 router.get('/:id', csrActivityController.getActivityById);
 
 // Create a new CSR activity
-router.post('/', validate(createCsrActivitySchema), csrActivityController.createActivity);
+router.post('/', validate({ body: createCsrActivitySchema }), csrActivityController.createActivity);
 
 // Update a CSR activity
-router.patch('/:id', validate(updateCsrActivitySchema), csrActivityController.updateActivity);
+router.patch('/:id', validate({ body: updateCsrActivitySchema }), csrActivityController.updateActivity);
 
 module.exports = router;

@@ -64,7 +64,7 @@ export default function CsrActivityDetail() {
           <div className="flex justify-between items-start mb-6">
             <h1 className="text-3xl font-bold text-gray-900">{activity.title}</h1>
             <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              activity.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+              activity.status === 'PUBLISHED' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
             }`}>
               {activity.status}
             </span>
@@ -78,20 +78,20 @@ export default function CsrActivityDetail() {
               <p className="font-semibold text-gray-900">{new Date(activity.startDate).toLocaleDateString()}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1 flex items-center"><MapPin className="w-4 h-4 mr-2"/> Location</p>
-              <p className="font-semibold text-gray-900">{activity.location || 'Remote'}</p>
+              <p className="text-sm text-gray-500 mb-1 flex items-center"><Award className="w-4 h-4 mr-2"/> Category</p>
+              <p className="font-semibold text-gray-900">{activity.category?.name || 'General'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1 flex items-center"><Users className="w-4 h-4 mr-2"/> Spots</p>
-              <p className="font-semibold text-gray-900">{activity._count?.participations || 0} / {activity.maxParticipants || 'Unlimited'}</p>
+              <p className="text-sm text-gray-500 mb-1 flex items-center"><Users className="w-4 h-4 mr-2"/> Participants</p>
+              <p className="font-semibold text-gray-900">{activity._count?.participations || 0}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-1 flex items-center"><Award className="w-4 h-4 mr-2"/> Reward</p>
-              <p className="font-semibold text-amber-600">{activity.pointsAwarded} XP</p>
+              <p className="font-semibold text-amber-600">{activity.maxPoints} XP</p>
             </div>
           </div>
 
-          {!hasJoined && activity.status === 'Published' && (
+          {!hasJoined && activity.status === 'PUBLISHED' && (
             <div className="bg-primary-50 rounded-lg p-6 border border-primary-100 flex flex-col md:flex-row items-center justify-between">
               <div className="mb-4 md:mb-0">
                 <h3 className="text-lg font-bold text-primary-900">Want to participate?</h3>

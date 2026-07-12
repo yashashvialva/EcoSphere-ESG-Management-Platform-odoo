@@ -23,9 +23,9 @@ export default function ParticipationList({ activityId, initialParticipations = 
 
   const getStatusBadge = (status) => {
     const colors = {
-      Pending: 'bg-yellow-100 text-yellow-800',
-      Approved: 'bg-green-100 text-green-800',
-      Rejected: 'bg-red-100 text-red-800'
+      PENDING: 'bg-yellow-100 text-yellow-800',
+      APPROVED: 'bg-green-100 text-green-800',
+      REJECTED: 'bg-red-100 text-red-800'
     };
     return <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[status] || 'bg-gray-100 text-gray-800'}`}>{status}</span>;
   };
@@ -44,14 +44,14 @@ export default function ParticipationList({ activityId, initialParticipations = 
                 <p className="text-sm font-semibold text-gray-900">{p.employee?.firstName} {p.employee?.lastName}</p>
                 {getStatusBadge(p.approvalStatus)}
               </div>
-              {p.proofUrl && (
-                <a href={p.proofUrl} target="_blank" rel="noreferrer" className="text-xs text-primary-600 hover:underline">
+              {p.proofFile && (
+                <a href={p.proofFile} target="_blank" rel="noreferrer" className="text-xs text-primary-600 hover:underline">
                   View Evidence
                 </a>
               )}
             </div>
 
-            {p.approvalStatus === 'Pending' && (
+            {p.approvalStatus === 'PENDING' && (
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleEvaluate(p.id, 'Approved')}

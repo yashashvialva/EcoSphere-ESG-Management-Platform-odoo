@@ -1,6 +1,7 @@
 const csrActivityRepository = require('../repositories/csrActivity.repository');
 const { NotFoundError, BusinessRuleError } = require('../../../shared/errors');
 const { CSR_STATUS } = require('../constants/csr.constants');
+const prisma = require('../../../config/prisma');
 
 class CsrActivityService {
   async createActivity(data, organizerId) {
@@ -8,8 +9,23 @@ class CsrActivityService {
       throw new BusinessRuleError('Start date must be before end date');
     }
 
+    let categoryId = data.categoryId;
+    if (!categoryId) {
+      // Find or create a default category for CSR activities to make the UI simpler
+      let category = await prisma.category.findFirst({
+        where: { type: 'CSR_ACTIVITY' }
+      });
+      if (!category) {
+        category = await prisma.category.create({
+          data: { name: 'General CSR', type: 'CSR_ACTIVITY' }
+        });
+      }
+      categoryId = category.id;
+    }
+
     return csrActivityRepository.create({
       ...data,
+      categoryId,
       status: CSR_STATUS.DRAFT
     });
   }

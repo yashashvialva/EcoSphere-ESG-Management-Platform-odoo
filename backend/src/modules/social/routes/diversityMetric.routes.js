@@ -9,8 +9,8 @@ const router = express.Router();
 router.use(authenticate);
 
 // Note: In a real app, adding metrics would be restricted by 'authorize' middleware to HR/Admins
-router.post('/', validate(createDiversityMetricSchema), diversityMetricController.addMetric);
-router.get('/', validate(queryDiversityMetricsSchema, 'query'), diversityMetricController.getMetrics);
+router.post('/', validate({ body: createDiversityMetricSchema }), diversityMetricController.addMetric);
+router.get('/', validate({ query: queryDiversityMetricsSchema }), diversityMetricController.getMetrics);
 router.get('/summary', diversityMetricController.getDashboardSummary);
 
 module.exports = router;

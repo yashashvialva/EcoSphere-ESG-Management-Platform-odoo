@@ -9,8 +9,8 @@ const router = express.Router();
 router.use(authenticate);
 
 router.get('/', trainingController.getTrainings);
-router.post('/', validate(createTrainingSchema), trainingController.createTraining);
-router.patch('/:id', validate(updateTrainingSchema), trainingController.updateTraining);
-router.post('/:id/complete', validate(completeTrainingSchema), trainingController.completeTraining);
+router.post('/', validate({ body: createTrainingSchema }), trainingController.createTraining);
+router.patch('/:id', validate({ body: updateTrainingSchema }), trainingController.updateTraining);
+router.post('/:id/complete', validate({ body: completeTrainingSchema }), trainingController.completeTraining);
 
 module.exports = router;

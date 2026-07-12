@@ -7,21 +7,16 @@ const notificationService = require('../../../shared/notifications/notificationS
 const prisma = require('../../../config/prisma'); // Required for fetching Org Settings
 
 class ParticipationService {
-  async joinActivity(employeeId, activityId, proofUrl) {
+  async joinActivity(employeeId, csrActivityId, proofUrl) {
     // 1. Check if activity exists and is open
-    const activity = await csrActivityRepository.findById(activityId);
+    const activity = await csrActivityRepository.findById(csrActivityId);
     if (!activity) throw new NotFoundError('CSR Activity not found');
     if (activity.status !== CSR_STATUS.PUBLISHED) {
-      throw new BusinessRuleError('Can only join Published activities');
+      throw new BusinessRuleError('Activity is not open for participation');
     }
 
-    // 2. Check max participants
-    if (activity.maxParticipants && activity._count.participations >= activity.maxParticipants) {
-      throw new BusinessRuleError('Activity is full');
-    }
-
-    // 3. Check if already joined
-    const existing = await participationRepository.findUnique(employeeId, activityId);
+    // 2. Check if already joined
+    const existing = await participationRepository.findUnique(employeeId, csrActivityId);
     if (existing) {
       throw new BusinessRuleError('You have already joined this activity');
     }
@@ -35,9 +30,8 @@ class ParticipationService {
     // 5. Create
     return participationRepository.create({
       employeeId,
-      activityId,
-      approvalStatus: APPROVAL_STATUS.PENDING,
-      proofUrl
+      csrActivityId,
+      proofFile: proofUrl
     });
   }
 
@@ -48,27 +42,31 @@ class ParticipationService {
       throw new BusinessRuleError(`Participation is already ${participation.approvalStatus}`);
     }
 
-    const points = customPoints !== undefined ? customPoints : participation.activity.pointsAwarded;
+    const points = customPoints !== undefined ? customPoints : participation.csrActivity.maxPoints;
 
     // Perform DB update
     const updated = await participationRepository.updateStatus(participationId, status, status === APPROVAL_STATUS.APPROVED ? points : null);
 
     // Side effects (using stubs from M1)
     if (status === APPROVAL_STATUS.APPROVED) {
-      await awardXp(participation.employeeId, points, `Approved for CSR Activity: ${participation.activity.title}`);
-      await notificationService.createNotification(
-        participation.employeeId,
-        'CSR_APPROVED',
-        `Your participation in ${participation.activity.title} was approved! You earned ${points} XP.`,
-        `/social/csr-activities/${participation.activityId}`
-      );
+      await awardXp(participation.employeeId, points, `Approved participation in ${participation.csrActivity.title}`);
+      await notificationService.createNotification({
+        employeeId: participation.employeeId,
+        type: 'CSR_APPROVED',
+        title: 'CSR Participation Approved',
+        message: `Your participation in ${participation.csrActivity.title} was approved. You earned ${points} XP!`,
+        relatedEntityType: 'CSR_ACTIVITY',
+        relatedEntityId: participation.csrActivityId
+      });
     } else {
-      await notificationService.createNotification(
-        participation.employeeId,
-        'CSR_REJECTED',
-        `Your participation in ${participation.activity.title} was rejected.`,
-        `/social/csr-activities/${participation.activityId}`
-      );
+      await notificationService.createNotification({
+        employeeId: participation.employeeId,
+        type: 'CSR_REJECTED',
+        title: 'CSR Participation Rejected',
+        message: `Your participation in ${participation.csrActivity.title} was rejected.`,
+        relatedEntityType: 'CSR_ACTIVITY',
+        relatedEntityId: participation.csrActivityId
+      });
     }
 
     return updated;

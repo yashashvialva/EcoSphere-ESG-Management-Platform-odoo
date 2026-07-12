@@ -2,10 +2,11 @@ const { z } = require('zod');
 
 const createDiversityMetricSchema = z.object({
   departmentId: z.string().uuid(),
-  date: z.string().datetime(), // ISO Date String
+  reportingDate: z.string().datetime(), // ISO Date String
   metricType: z.string().min(2).max(50), // e.g., 'Gender', 'Ethnicity', 'Age Group'
-  metricName: z.string().min(2).max(100), // e.g., 'Female', 'Hispanic', '25-34'
-  value: z.number().nonnegative(),
+  notes: z.string().min(2).max(255).optional(), // stores categories like 'Female', 'Male', etc.
+  metricValue: z.number().nonnegative(),
+  totalPopulation: z.number().int().nonnegative().optional(),
 });
 
 const queryDiversityMetricsSchema = z.object({

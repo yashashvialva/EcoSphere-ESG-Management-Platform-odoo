@@ -5,18 +5,18 @@ class ParticipationRepository {
     return prisma.employeeParticipation.create({
       data,
       include: {
-        activity: true,
+        csrActivity: true,
         employee: { select: { id: true, firstName: true, lastName: true } }
       }
     });
   }
 
-  async findUnique(employeeId, activityId) {
+  async findUnique(employeeId, csrActivityId) {
     return prisma.employeeParticipation.findUnique({
       where: {
-        employeeId_activityId: {
+        employeeId_csrActivityId: {
           employeeId,
-          activityId
+          csrActivityId
         }
       }
     });
@@ -26,7 +26,7 @@ class ParticipationRepository {
     return prisma.employeeParticipation.findUnique({
       where: { id },
       include: {
-        activity: true,
+        csrActivity: true,
         employee: true
       }
     });
@@ -40,15 +40,15 @@ class ParticipationRepository {
         pointsEarned: pointsAwarded
       },
       include: {
-        activity: true,
+        csrActivity: true,
         employee: true
       }
     });
   }
 
-  async findAllByActivity(activityId) {
+  async findAllByActivity(csrActivityId) {
     return prisma.employeeParticipation.findMany({
-      where: { activityId },
+      where: { csrActivityId },
       include: {
         employee: { select: { id: true, firstName: true, lastName: true } }
       }

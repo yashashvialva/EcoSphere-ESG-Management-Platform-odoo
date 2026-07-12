@@ -17,15 +17,15 @@ class DiversityMetricService {
   async getDashboardSummary(departmentId) {
     const allMetrics = await diversityMetricRepository.getSummary(departmentId);
     
-    // Group the raw metrics by metricType and metricName, keeping only the latest date
+    // Group the raw metrics by metricType and notes, keeping only the latest date
     const latestMetrics = {};
 
     allMetrics.forEach(metric => {
-      const key = `${metric.metricType}_${metric.metricName}_${metric.departmentId}`;
+      const key = `${metric.metricType}_${metric.notes || 'General'}_${metric.departmentId}`;
       if (!latestMetrics[key]) {
         latestMetrics[key] = metric;
       } else {
-        if (new Date(metric.date) > new Date(latestMetrics[key].date)) {
+        if (new Date(metric.reportingDate) > new Date(latestMetrics[key].reportingDate)) {
           latestMetrics[key] = metric;
         }
       }
