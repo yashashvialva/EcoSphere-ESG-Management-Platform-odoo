@@ -3,6 +3,11 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './store/authStore';
 
+// Gamification Pages
+import Challenges from './pages/gamification/Challenges';
+import Leaderboard from './pages/gamification/Leaderboard';
+import Badges from './pages/gamification/Badges';
+import Rewards from './pages/gamification/Rewards';
 // Layouts
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
@@ -60,6 +65,15 @@ const AppRoutes = () => {
           <Route path="csr-activities/:id" element={<ProtectedRoute><CsrActivityDetail /></ProtectedRoute>} />
           <Route path="training" element={<ProtectedRoute><TrainingList /></ProtectedRoute>} />
           <Route path="diversity" element={<ProtectedRoute><DiversityDashboard /></ProtectedRoute>} />
+        </Route>
+        
+        {/* Developer 3 - Gamification Routes */}
+        <Route path="gamification">
+          <Route index element={<Navigate to="leaderboard" replace />} />
+          <Route path="challenges" element={<ProtectedRoute requiredPermission="gamification.read"><Challenges /></ProtectedRoute>} />
+          <Route path="leaderboard" element={<ProtectedRoute requiredPermission="gamification.read"><Leaderboard /></ProtectedRoute>} />
+          <Route path="badges" element={<ProtectedRoute requiredPermission="gamification.read"><Badges /></ProtectedRoute>} />
+          <Route path="rewards" element={<ProtectedRoute requiredPermission="gamification.read"><Rewards /></ProtectedRoute>} />
         </Route>
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />
