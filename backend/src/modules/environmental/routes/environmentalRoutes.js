@@ -12,6 +12,7 @@ const { createEmissionFactorSchema, updateEmissionFactorSchema } = require('../v
 const { createCarbonTransactionSchema } = require('../validators/carbonTransactionValidator');
 const { createEsgGoalSchema, updateEsgGoalSchema } = require('../validators/esgGoalValidator');
 const { createProductProfileSchema, updateProductProfileSchema } = require('../validators/productProfileValidator');
+const { validateUUID } = require('../../../../middleware/validateUUID');
 
 // Apply authentication to all routes
 router.use(authenticate);
@@ -25,6 +26,7 @@ router.get(
 
 router.get(
   '/emission-factors/:id',
+  validateUUID('id'),
   authorize('environmental.read'),
   emissionFactorController.getById
 );
@@ -38,6 +40,7 @@ router.post(
 
 router.patch(
   '/emission-factors/:id',
+  validateUUID('id'),
   authorize('environmental.manage'),
   validate(updateEmissionFactorSchema),
   emissionFactorController.update
@@ -45,6 +48,7 @@ router.patch(
 
 router.delete(
   '/emission-factors/:id',
+  validateUUID('id'),
   authorize('environmental.manage'),
   emissionFactorController.delete
 );
@@ -72,6 +76,7 @@ router.get(
 
 router.get(
   '/esg-goals/:id',
+  validateUUID('id'),
   authorize('environmental.read'),
   esgGoalController.getById
 );
@@ -85,6 +90,7 @@ router.post(
 
 router.patch(
   '/esg-goals/:id',
+  validateUUID('id'),
   authorize('environmental.manage'),
   validate(updateEsgGoalSchema),
   esgGoalController.update
@@ -92,6 +98,7 @@ router.patch(
 
 router.delete(
   '/esg-goals/:id',
+  validateUUID('id'),
   authorize('environmental.manage'),
   esgGoalController.delete
 );
@@ -105,6 +112,7 @@ router.get(
 
 router.get(
   '/product-profiles/:id',
+  validateUUID('id'),
   authorize('environmental.read'),
   productProfileController.getById
 );
@@ -118,6 +126,7 @@ router.post(
 
 router.patch(
   '/product-profiles/:id',
+  validateUUID('id'),
   authorize('environmental.manage'),
   validate(updateProductProfileSchema),
   productProfileController.update
@@ -125,6 +134,7 @@ router.patch(
 
 router.delete(
   '/product-profiles/:id',
+  validateUUID('id'),
   authorize('environmental.manage'),
   productProfileController.delete
 );
