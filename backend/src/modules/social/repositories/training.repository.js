@@ -47,7 +47,7 @@ class TrainingRepository {
   async findCompletion(employeeId, trainingId) {
     return prisma.trainingCompletion.findUnique({
       where: {
-        employeeId_trainingId: { employeeId, trainingId }
+        trainingId_employeeId: { trainingId, employeeId }
       }
     });
   }
