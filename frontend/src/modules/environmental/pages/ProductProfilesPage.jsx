@@ -12,26 +12,19 @@ const ProductProfilesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchProfiles();
-  }, [page]);
+  useEffect(() => { fetchProfiles(); }, [page]);
 
   const fetchProfiles = async () => {
     try {
       setLoading(true);
-      const res = await environmentalApi.getProductProfiles({
-        page,
-        limit: 10,
-      });
+      const res = await environmentalApi.getProductProfiles({ page, limit: 10 });
       setProfiles(res.data);
       setTotalPages(res.meta.totalPages);
       setError(null);
@@ -42,15 +35,8 @@ const ProductProfilesPage = () => {
     }
   };
 
-  const handleOpenModal = (profile = null) => {
-    setCurrentProfile(profile);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setCurrentProfile(null);
-    setIsModalOpen(false);
-  };
+  const handleOpenModal = (profile = null) => { setCurrentProfile(profile); setIsModalOpen(true); };
+  const handleCloseModal = () => { setCurrentProfile(null); setIsModalOpen(false); };
 
   const handleSubmit = async (data) => {
     try {
@@ -82,20 +68,26 @@ const ProductProfilesPage = () => {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'DESIGN': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Design</span>;
-      case 'MANUFACTURING': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Manufacturing</span>;
-      case 'DISTRIBUTION': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">Distribution</span>;
-      case 'END_OF_LIFE': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">End of Life</span>;
+      case 'DESIGN': return <span className="chip-info">Design</span>;
+      case 'MANUFACTURING': return <span className="chip-warning">Manufacturing</span>;
+      case 'DISTRIBUTION': return <span className="chip-mauve">Distribution</span>;
+      case 'END_OF_LIFE': return <span className="chip-gray">End of Life</span>;
       default: return null;
     }
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Product Profiles</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage product lifecycle carbon footprints.</p>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center space-x-3">
+          <div className="p-2.5 rounded-xl" style={{ background: '#836A7822' }}>
+            <Package className="h-6 w-6" style={{ color: '#836A78' }} />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold" style={{ color: '#2F2F2F' }}>Product Profiles</h1>
+            <p className="text-sm mt-0.5" style={{ color: '#6B7280' }}>Manage product lifecycle carbon footprints.</p>
+          </div>
         </div>
         {canManage && (
           <button onClick={() => handleOpenModal()} className="btn-primary flex items-center">
@@ -105,66 +97,69 @@ const ProductProfilesPage = () => {
         )}
       </div>
 
+      {/* Error */}
       {error && (
-        <div className="bg-red-50 p-4 rounded-md flex items-start mb-6">
-          <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3" />
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="p-4 rounded-xl flex items-start border" style={{ background: '#E96A6A11', borderColor: '#E96A6A33' }}>
+          <AlertCircle className="h-5 w-5 mt-0.5 mr-3 flex-shrink-0" style={{ color: '#E96A6A' }} />
+          <p className="text-sm" style={{ color: '#E96A6A' }}>{error}</p>
         </div>
       )}
 
-      <div className="card overflow-hidden p-0">
+      {/* Table */}
+      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden" style={{ borderColor: '#ECE8E3' }}>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lifecycle Phase</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Footprint (kg CO2e)</th>
-                {canManage && <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>}
+          <table className="min-w-full">
+            <thead>
+              <tr style={{ background: '#F8C7AE22' }}>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Product</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Department</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Lifecycle Phase</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Footprint (kg CO2e)</th>
+                {canManage && <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider" style={{ color: '#6B7280' }}>Actions</th>}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y" style={{ borderColor: '#ECE8E3' }}>
               {loading ? (
-                <tr>
-                  <td colSpan={canManage ? 5 : 4} className="px-6 py-4 text-center text-sm text-gray-500">Loading...</td>
-                </tr>
+                <tr><td colSpan={canManage ? 5 : 4} className="px-6 py-10 text-center text-sm" style={{ color: '#6B7280' }}>Loading...</td></tr>
               ) : profiles.length === 0 ? (
-                <tr>
-                  <td colSpan={canManage ? 5 : 4} className="px-6 py-4 text-center text-sm text-gray-500">No product profiles found.</td>
-                </tr>
+                <tr><td colSpan={canManage ? 5 : 4} className="px-6 py-10 text-center text-sm" style={{ color: '#6B7280' }}>No product profiles found.</td></tr>
               ) : (
                 profiles.map((profile) => (
-                  <tr key={profile.id} className="hover:bg-gray-50">
+                  <tr
+                    key={profile.id}
+                    className="transition-colors duration-150"
+                    onMouseEnter={e => e.currentTarget.style.background = '#FFF8C9'}
+                    onMouseLeave={e => e.currentTarget.style.background = ''}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-primary-50 rounded-lg flex items-center justify-center">
-                          <Package className="h-5 w-5 text-primary-600" />
+                        <div className="flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center mr-4" style={{ background: '#836A7822' }}>
+                          <Package className="h-5 w-5" style={{ color: '#836A78' }} />
                         </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{profile.name}</div>
+                        <div>
+                          <div className="text-sm font-semibold" style={{ color: '#2F2F2F' }}>{profile.name}</div>
                           {profile.description && (
-                            <div className="text-sm text-gray-500 truncate max-w-[200px]">{profile.description}</div>
+                            <div className="text-xs truncate max-w-[200px]" style={{ color: '#6B7280' }}>{profile.description}</div>
                           )}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{profile.department?.name || 'Unknown'}</div>
-                      <div className="text-xs text-gray-500">{profile.department?.code}</div>
+                      <div className="text-sm font-semibold" style={{ color: '#2F2F2F' }}>{profile.department?.name || 'Unknown'}</div>
+                      <div className="text-xs" style={{ color: '#6B7280' }}>{profile.department?.code}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(profile.lifecycle_status)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-gray-900">{Number(profile.carbon_footprint).toLocaleString()}</span>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono" style={{ color: '#2F2F2F' }}>
+                      {Number(profile.carbon_footprint).toLocaleString()}
                     </td>
                     {canManage && (
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onClick={() => handleOpenModal(profile)} className="text-primary-600 hover:text-primary-900 mr-4">
+                      <td className="px-6 py-4 whitespace-nowrap text-right space-x-3">
+                        <button onClick={() => handleOpenModal(profile)} className="transition-colors" style={{ color: '#9BBDAF' }} onMouseEnter={e => e.currentTarget.style.color = '#5E9E6F'} onMouseLeave={e => e.currentTarget.style.color = '#9BBDAF'}>
                           <Edit2 className="h-4 w-4 inline" />
                         </button>
-                        <button onClick={() => handleDelete(profile.id)} className="text-red-600 hover:text-red-900">
+                        <button onClick={() => handleDelete(profile.id)} className="transition-colors" style={{ color: '#E96A6A88' }} onMouseEnter={e => e.currentTarget.style.color = '#E96A6A'} onMouseLeave={e => e.currentTarget.style.color = '#E96A6A88'}>
                           <Trash2 className="h-4 w-4 inline" />
                         </button>
                       </td>
@@ -178,22 +173,11 @@ const ProductProfilesPage = () => {
         
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="bg-white px-4 py-3 border-t border-gray-200 flex items-center justify-between sm:px-6">
-            <div className="flex-1 flex justify-between sm:justify-end">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
-              >
-                Next
-              </button>
+          <div className="px-6 py-3 border-t flex items-center justify-between" style={{ borderColor: '#ECE8E3' }}>
+            <span className="text-sm" style={{ color: '#6B7280' }}>Page {page} of {totalPages}</span>
+            <div className="flex space-x-2">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="btn-ghost py-1.5 px-4 text-sm disabled:opacity-40">Previous</button>
+              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="btn-ghost py-1.5 px-4 text-sm disabled:opacity-40">Next</button>
             </div>
           </div>
         )}
@@ -201,17 +185,16 @@ const ProductProfilesPage = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={handleCloseModal}></div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0 bg-primary-100 rounded-full p-2 mr-3">
-                    <Package className="h-6 w-6 text-primary-600" />
+        <div className="fixed z-50 inset-0 overflow-y-auto" role="dialog" aria-modal="true">
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={handleCloseModal} />
+            <div className="relative bg-white rounded-2xl shadow-lg max-w-lg w-full border" style={{ borderColor: '#ECE8E3' }}>
+              <div className="px-6 pt-6 pb-4">
+                <div className="flex items-center mb-4 space-x-3">
+                  <div className="p-2 rounded-xl" style={{ background: '#836A7822' }}>
+                    <Package className="h-5 w-5" style={{ color: '#836A78' }} />
                   </div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                  <h3 className="text-lg font-bold" style={{ color: '#2F2F2F' }}>
                     {currentProfile ? 'Edit Product Profile' : 'Add Product Profile'}
                   </h3>
                 </div>

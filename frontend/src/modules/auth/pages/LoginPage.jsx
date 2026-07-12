@@ -28,27 +28,30 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <div className="animate-fade-in">
       <div className="mb-6 text-center">
-        <h3 className="text-lg font-medium text-gray-900">Welcome Back</h3>
-        <p className="text-sm text-gray-500 mt-1">Sign in to your enterprise account.</p>
+        <h3 className="text-lg font-semibold" style={{ color: '#2F2F2F' }}>Welcome Back</h3>
+        <p className="text-sm mt-1" style={{ color: '#6B7280' }}>Sign in to your enterprise account.</p>
       </div>
 
       {localError && (
-        <div className="mb-4 bg-red-50 p-3 rounded-md flex items-start border border-red-100">
-          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-2 flex-shrink-0" />
-          <p className="text-sm text-red-700">{localError}</p>
+        <div
+          className="mb-4 p-3 rounded-xl flex items-start border"
+          style={{ background: '#E96A6A11', borderColor: '#E96A6A33' }}
+        >
+          <AlertCircle className="h-5 w-5 mt-0.5 mr-2 flex-shrink-0" style={{ color: '#E96A6A' }} />
+          <p className="text-sm" style={{ color: '#E96A6A' }}>{localError}</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+          <label className="block text-sm font-semibold mb-1.5" style={{ color: '#2F2F2F' }} htmlFor="email">
             Email Address
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Mail className="h-5 w-5 text-gray-400" />
+              <Mail className="h-5 w-5" style={{ color: '#836A78' }} />
             </div>
             <input
               id="email"
@@ -63,12 +66,12 @@ const LoginPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">
+          <label className="block text-sm font-semibold mb-1.5" style={{ color: '#2F2F2F' }} htmlFor="password">
             Password
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
+              <Lock className="h-5 w-5" style={{ color: '#836A78' }} />
             </div>
             <input
               id="password"
@@ -84,7 +87,7 @@ const LoginPage = () => {
 
         <button
           type="submit"
-          className="w-full btn-primary flex justify-center py-2.5 mt-2"
+          className="w-full btn-primary flex justify-center items-center py-3 mt-2"
           disabled={loading}
         >
           {loading ? (
