@@ -6,12 +6,12 @@ module.exports = async (prisma) => {
   if (!settings) {
     await prisma.organizationSetting.create({
       data: {
-        name: 'EcoSphere Corp',
-        env_weight: 40.0,
-        soc_weight: 30.0,
-        gov_weight: 30.0,
-        industry: 'Technology',
-        fiscal_start: '01-01',
+        organizationName: 'EcoSphere Corp',
+        environmentalWeight: 40.0,
+        socialWeight: 30.0,
+        governanceWeight: 30.0,
+        defaultCurrency: 'USD',
+        timezone: 'UTC',
       },
     });
   }

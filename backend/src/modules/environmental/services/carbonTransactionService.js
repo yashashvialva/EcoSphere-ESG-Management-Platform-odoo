@@ -42,7 +42,7 @@ class CarbonTransactionService {
       throw new NotFoundError('Emission Factor');
     }
 
-    if (!factor.is_active) {
+    if (!factor.isActive) {
       throw new BadRequestError('Cannot use an inactive emission factor.');
     }
 

@@ -58,7 +58,7 @@ const CarbonTransactionForm = ({ onSubmit, onCancel, isLoading }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {user?.roleName === 'Administrator' && (
+      {user?.role === 'Administrator' && (
         <div>
           <label htmlFor="departmentId" className="block text-sm font-medium text-gray-700">Department ID</label>
           <input
