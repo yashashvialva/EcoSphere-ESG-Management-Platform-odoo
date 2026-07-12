@@ -23,6 +23,7 @@ enum ApprovalStatus {
 
 enum CsrActivityStatus {
   DRAFT
+  PENDING_APPROVAL
   PUBLISHED
   COMPLETED
   CANCELLED

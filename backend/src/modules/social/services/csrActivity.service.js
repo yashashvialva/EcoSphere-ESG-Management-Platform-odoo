@@ -45,6 +45,17 @@ class CsrActivityService {
       if (activity.status === CSR_STATUS.COMPLETED || activity.status === CSR_STATUS.CANCELLED) {
         throw new BusinessRuleError(`Cannot change status of a ${activity.status} activity`);
       }
+      
+      // Restrict publishing to Administrators
+      if (data.status === CSR_STATUS.PUBLISHED || data.status === CSR_STATUS.REJECTED) {
+        const employee = await prisma.employee.findUnique({
+          where: { id: employeeId },
+          include: { role: true }
+        });
+        if (employee?.role?.name !== 'Administrator') {
+          throw new BusinessRuleError('Only Administrators can publish or reject CSR activities');
+        }
+      }
     }
 
     return csrActivityRepository.update(id, data);

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { socialApi } from '../services/socialApi';
 import ParticipationList from '../components/ParticipationList';
 import { useAuth } from '../../../store/authStore';
-import { Calendar, MapPin, Users, Award, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Users, Award, ArrowLeft, Edit, CheckCircle, XCircle, Send } from 'lucide-react';
 
 export default function CsrActivityDetail() {
   const { id } = useParams();
@@ -15,6 +15,16 @@ export default function CsrActivityDetail() {
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
   const [proofUrl, setProofUrl] = useState('');
+
+  // Edit Modal State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    maxPoints: 0
+  });
 
   // Custom Modal State
   const [modal, setModal] = useState({ show: false, type: 'confirm', message: '', onConfirm: null });
@@ -39,6 +49,15 @@ export default function CsrActivityDetail() {
       ]);
       setActivity(activityData);
       setParticipations(participationData);
+      
+      // Initialize edit form
+      setEditFormData({
+        title: activityData.title,
+        description: activityData.description,
+        startDate: activityData.startDate ? new Date(activityData.startDate).toISOString().split('T')[0] : '',
+        endDate: activityData.endDate ? new Date(activityData.endDate).toISOString().split('T')[0] : '',
+        maxPoints: activityData.maxPoints
+      });
     } catch (error) {
       console.error('Failed to load CSR activity:', error);
     } finally {
@@ -61,10 +80,45 @@ export default function CsrActivityDetail() {
     });
   };
 
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    showConfirm('Are you sure you want to save these changes?', async () => {
+      try {
+        await socialApi.updateCsrActivity(id, {
+          ...editFormData,
+          startDate: new Date(editFormData.startDate).toISOString(),
+          endDate: new Date(editFormData.endDate).toISOString(),
+          maxPoints: Number(editFormData.maxPoints)
+        });
+        setShowEditModal(false);
+        showAlert('Activity updated successfully!');
+        loadData();
+      } catch (error) {
+        showAlert(error.response?.data?.message || 'Failed to update activity');
+      }
+    });
+  };
+
+  const handleStatusChange = (newStatus, confirmationMessage) => {
+    showConfirm(confirmationMessage, async () => {
+      try {
+        await socialApi.updateCsrActivity(id, { status: newStatus });
+        showAlert(`Activity status updated to ${newStatus}`);
+        loadData();
+      } catch (error) {
+        showAlert(error.response?.data?.message || 'Failed to update status');
+      }
+    });
+  };
+
   if (loading) return <div className="p-8 text-center text-gray-500">Loading activity...</div>;
   if (!activity) return <div className="p-8 text-center text-red-500">Activity not found</div>;
 
   const hasJoined = participations.some(p => p.employeeId === user?.id);
+  const isAdmin = user?.role === 'Administrator' || user?.roleName === 'Administrator';
+  
+  // Determine if the current user can edit (Admin, or assuming Organizer here)
+  const canEdit = activity.status === 'DRAFT';
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-6">
@@ -75,12 +129,67 @@ export default function CsrActivityDetail() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">{activity.title}</h1>
-            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              activity.status === 'PUBLISHED' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-            }`}>
-              {activity.status}
-            </span>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{activity.title}</h1>
+              <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                activity.status === 'PUBLISHED' ? 'bg-green-100 text-green-800' : 
+                activity.status === 'PENDING_APPROVAL' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
+                {activity.status}
+              </span>
+            </div>
+            
+            {/* Action Buttons based on status */}
+            <div className="flex space-x-3">
+              {canEdit && (
+                <>
+                  <button 
+                    onClick={() => setShowEditModal(true)}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm"
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Draft
+                  </button>
+                  {!isAdmin ? (
+                    <button 
+                      onClick={() => handleStatusChange('PENDING_APPROVAL', 'Are you sure you want to request an Admin to publish this activity?')}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 shadow-sm"
+                    >
+                      <Send className="w-4 h-4 mr-2" />
+                      Request Publish
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => handleStatusChange('PUBLISHED', 'Are you sure you want to publish this activity immediately?')}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 shadow-sm"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Publish Directly
+                    </button>
+                  )}
+                </>
+              )}
+              
+              {activity.status === 'PENDING_APPROVAL' && isAdmin && (
+                <>
+                  <button 
+                    onClick={() => handleStatusChange('REJECTED', 'Are you sure you want to reject this CSR activity? It will return to DRAFT state.')}
+                    className="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-lg text-red-700 bg-white hover:bg-red-50 shadow-sm"
+                  >
+                    <XCircle className="w-4 h-4 mr-2" />
+                    Reject
+                  </button>
+                  <button 
+                    onClick={() => handleStatusChange('PUBLISHED', 'Are you sure you want to approve and publish this activity?')}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 shadow-sm"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Approve & Publish
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <p className="text-gray-700 text-lg mb-8 leading-relaxed whitespace-pre-wrap">{activity.description}</p>
@@ -138,7 +247,47 @@ export default function CsrActivityDetail() {
       </div>
 
       {/* Admin/Organizer Participation List View */}
-      <ParticipationList activityId={id} initialParticipations={participations} />
+      {activity.status === 'PUBLISHED' && (
+        <ParticipationList activityId={id} initialParticipations={participations} />
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-8 w-full max-w-lg shadow-xl">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit CSR Activity</h2>
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input required type="text" value={editFormData.title} onChange={e => setEditFormData({...editFormData, title: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea required value={editFormData.description} onChange={e => setEditFormData({...editFormData, description: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 h-24" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                  <input required type="date" value={editFormData.startDate} onChange={e => setEditFormData({...editFormData, startDate: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                  <input required type="date" value={editFormData.endDate} onChange={e => setEditFormData({...editFormData, endDate: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Max XP Reward</label>
+                <input required type="number" min="0" value={editFormData.maxPoints} onChange={e => setEditFormData({...editFormData, maxPoints: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+              </div>
+              
+              <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-100">
+                <button type="button" onClick={() => setShowEditModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {modal.show && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
