@@ -1,4 +1,4 @@
-const prisma = require('../../../../config/prisma');
+const prisma = require('../../../config/prisma');
 
 class CarbonTransactionRepository {
   async findAll({ skip, take, departmentId, dateFrom, dateTo }) {
