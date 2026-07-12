@@ -21,7 +21,7 @@ module.exports = async (prisma) => {
       const perms = await prisma.permission.findMany({
         where: {
           code: {
-             in: ['gamification.reward.redeem', 'gamification.read']
+             in: ['gamification.reward.redeem', 'gamification.read', 'environmental.read', 'social.read', 'social.approve']
           }
         }
       });
@@ -29,15 +29,15 @@ module.exports = async (prisma) => {
       for (const p of perms) {
         await prisma.rolePermission.upsert({
           where: {
-            role_id_permission_id: {
-              role_id: role.id,
-              permission_id: p.id
+            roleId_permissionId: {
+              roleId: role.id,
+              permissionId: p.id
             }
           },
           update: {},
           create: {
-            role_id: role.id,
-            permission_id: p.id
+            roleId: role.id,
+            permissionId: p.id
           }
         });
       }

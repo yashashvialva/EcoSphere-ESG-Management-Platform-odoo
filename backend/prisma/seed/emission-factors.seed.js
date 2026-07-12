@@ -13,15 +13,22 @@ module.exports = async (prisma) => {
   ];
 
   for (const ef of emissionFactors) {
-    await prisma.emissionFactor.upsert({
+    const existingEf = await prisma.emissionFactor.findFirst({
       where: {
-        source_unit: {
-          source: ef.source,
-          unit: ef.unit
-        }
-      },
-      update: ef,
-      create: ef,
+        source: ef.source,
+        unit: ef.unit
+      }
     });
+
+    if (existingEf) {
+      await prisma.emissionFactor.update({
+        where: { id: existingEf.id },
+        data: ef
+      });
+    } else {
+      await prisma.emissionFactor.create({
+        data: ef
+      });
+    }
   }
 };
