@@ -7,6 +7,7 @@ import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
 
 import EmissionFactorsPage from './modules/environmental/pages/EmissionFactorsPage';
+import CarbonTransactionsPage from './modules/environmental/pages/CarbonTransactionsPage';
 
 // Placeholder Pages (To be implemented)
 const LoginPage = () => <div className="p-8">Login Page Placeholder</div>;
@@ -36,7 +37,11 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<Dashboard />} />
         
         {/* Developer 1 - Environmental Routes */}
-        <Route path="environmental" element={<ProtectedRoute requiredPermission="environmental.read"><EmissionFactorsPage /></ProtectedRoute>} />
+        <Route path="environmental">
+          <Route index element={<Navigate to="emission-factors" replace />} />
+          <Route path="emission-factors" element={<ProtectedRoute requiredPermission="environmental.read"><EmissionFactorsPage /></ProtectedRoute>} />
+          <Route path="carbon-transactions" element={<ProtectedRoute requiredPermission="environmental.read"><CarbonTransactionsPage /></ProtectedRoute>} />
+        </Route>
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />
       </Route>

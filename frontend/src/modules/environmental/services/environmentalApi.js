@@ -26,6 +26,17 @@ const environmentalApi = {
     const response = await api.delete(`/environmental/emission-factors/${id}`);
     return response.data;
   },
+
+  // Carbon Transactions
+  getCarbonTransactions: async (params) => {
+    const response = await api.get('/environmental/carbon-transactions', { params });
+    return response.data; // paginated response
+  },
+
+  createCarbonTransaction: async (data) => {
+    const response = await api.post('/environmental/carbon-transactions', data);
+    return response.data;
+  },
 };
 
 export default environmentalApi;

@@ -10,7 +10,9 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Home,
+  FileText
 } from 'lucide-react';
 
 const MainLayout = () => {
@@ -19,8 +21,9 @@ const MainLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Environmental', href: '/environmental', icon: Leaf, permission: 'environmental.read' },
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Emission Factors', href: '/environmental/emission-factors', icon: Settings, permission: 'environmental.read' },
+    { name: 'Carbon Transactions', href: '/environmental/carbon-transactions', icon: FileText, permission: 'environmental.read' },
     { name: 'Social', href: '/social', icon: Users, permission: 'social.read' },
     { name: 'Governance', href: '/governance', icon: ShieldCheck, permission: 'governance.read' },
     { name: 'Gamification', href: '/gamification', icon: Award, permission: 'gamification.read' },
