@@ -1,9 +1,10 @@
 const express = require('express');
+const challengeRoutes = require('./challenge.routes');
 
 const router = express.Router();
 
 // Challenge routes will be mounted in Milestone 2
-// router.use('/challenges', challengeRoutes);
+router.use('/challenges', challengeRoutes);
 
 // Badge routes will be mounted in Milestone 7
 // router.use('/badges', badgeRoutes);

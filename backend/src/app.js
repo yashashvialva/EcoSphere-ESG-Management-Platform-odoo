@@ -9,6 +9,7 @@ const errorHandler = require('./middleware/error.middleware');
 // Module imports
 const authRoutes = require('./modules/auth');
 const socialRoutes = require('./modules/social/routes/index');
+const gamificationRoutes = require('./modules/gamification');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.get('/api/health', (req, res) => {
 // ─── API Routes ──────────────────────────────────────────────────
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/social', socialRoutes);
+app.use('/api/v1/gamification', gamificationRoutes);
 
 // ─── Error Handling ──────────────────────────────────────────────
 app.use(notFound);
