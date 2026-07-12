@@ -1,13 +1,13 @@
 module.exports = {
   CSR_STATUS: {
-    DRAFT: 'Draft',
-    PUBLISHED: 'Published',
-    COMPLETED: 'Completed',
-    CANCELLED: 'Cancelled'
+    DRAFT: 'DRAFT',
+    PUBLISHED: 'PUBLISHED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED'
   },
   APPROVAL_STATUS: {
-    PENDING: 'Pending',
-    APPROVED: 'Approved',
-    REJECTED: 'Rejected'
+    PENDING: 'PENDING',
+    APPROVED: 'APPROVED',
+    REJECTED: 'REJECTED'
   }
 };
