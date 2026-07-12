@@ -105,6 +105,17 @@ cd frontend
 npm run dev
 ```
 
+### 5. Demo Credentials
+If you have seeded the database (`npm run seed`), you can log in using the following test accounts:
+
+**Admin User:**
+- Email: `admin@ecosphere.com`
+- Password: `Admin@123`
+
+**Standard Employee:**
+- Email: `john.doe@ecosphere.com`
+- Password: `password123`
+
 ---
 
 *Built with ❤️ for the Hackathon.*

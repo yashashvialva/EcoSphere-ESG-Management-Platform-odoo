@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 const CarbonTransactionsPage = () => {
   const { hasPermission, user } = useAuth();
   const canManage = hasPermission('environmental.manage');
-  const isAdmin = user?.roleName === 'Administrator';
+  const isAdmin = user?.role === 'Administrator';
   
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);

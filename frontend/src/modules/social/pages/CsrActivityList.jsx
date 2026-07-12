@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { socialApi } from '../services/socialApi';
+import { useAuth } from '../../../store/authStore';
 import { Leaf, Plus, Calendar, Users } from 'lucide-react';
 
 export default function CsrActivityList() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'Administrator';
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -69,13 +72,15 @@ export default function CsrActivityList() {
           <h1 className="text-2xl font-bold text-gray-900">CSR Activities</h1>
           <p className="mt-1 text-sm text-gray-500">Manage and participate in corporate social responsibility events</p>
         </div>
-        <button 
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Create Activity
-        </button>
+        {isAdmin && (
+          <button 
+            onClick={() => setShowCreateModal(true)}
+            className="btn-primary flex items-center"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add CSR Activity
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

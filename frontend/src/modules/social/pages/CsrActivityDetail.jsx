@@ -115,7 +115,7 @@ export default function CsrActivityDetail() {
   if (!activity) return <div className="p-8 text-center text-red-500">Activity not found</div>;
 
   const hasJoined = participations.some(p => p.employeeId === user?.id);
-  const isAdmin = user?.role === 'Administrator' || user?.roleName === 'Administrator';
+  const isAdmin = user?.role === 'Administrator';
   
   // Determine if the current user can edit (Admin, or assuming Organizer here)
   const canEdit = activity.status === 'DRAFT';

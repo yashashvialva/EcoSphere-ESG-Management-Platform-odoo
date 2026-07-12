@@ -60,25 +60,26 @@ export default function GovernanceDashboard() {
     const load = async () => {
       try {
         setError(null);
-        const [polRes, audRes, issOverdue, ackOverdue, polAll, issAll] = await Promise.all([
+        const [polRes, audRes, issOverdue, ackOverdue, polAll, issAll, audAll] = await Promise.all([
           getPolicies({ limit: 5 }),
           getAudits({ limit: 5 }),
           getOverdueComplianceIssues(),
           getOverdueAcknowledgements(),
           getPolicies({ limit: 100 }),
           getComplianceIssues({ limit: 100 }),
+          getAudits({ limit: 100 }),
         ]);
 
-        setRecentPolicies(polRes.data.data || []);
-        setRecentAudits(audRes.data.data || []);
-        setAllPolicies(polAll.data.data || []);
-        setAllIssues(issAll.data.data || []);
+        setRecentPolicies(polRes.data || []);
+        setRecentAudits(audRes.data || []);
+        setAllPolicies(polAll.data || []);
+        setAllIssues(issAll.data || []);
 
         setKpi({
-          policies: polRes.data.pagination?.total ?? 0,
-          audits: audRes.data.pagination?.total ?? 0,
-          overdueIssues: Array.isArray(issOverdue.data.data) ? issOverdue.data.data.length : 0,
-          pendingAcks: Array.isArray(ackOverdue.data.data) ? ackOverdue.data.data.length : 0,
+          policies: polAll.pagination?.total ?? (polAll.data?.length || 0),
+          audits: audAll.pagination?.total ?? (audAll.data?.length || 0),
+          overdueIssues: Array.isArray(issOverdue.data) ? issOverdue.data.length : 0,
+          pendingAcks: Array.isArray(ackOverdue.data) ? ackOverdue.data.length : 0,
         });
       } catch (err) {
         setError(err.response?.data?.error?.message || 'Failed to load governance data');

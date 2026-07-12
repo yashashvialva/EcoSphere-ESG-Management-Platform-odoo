@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const res = await authService.login(credentials);
       localStorage.setItem('token', res.token);
-      setUser(res.user);
+      setUser(res.user || res.employee);
       setError(null);
       return res;
     } catch (err) {
@@ -62,8 +62,8 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await authService.register(userData);
-      localStorage.setItem('token', res.token);
-      setUser(res.user);
+      // Registration does not return a token in this backend
+      setUser(res.user || res);
       setError(null);
       return res;
     } catch (err) {
