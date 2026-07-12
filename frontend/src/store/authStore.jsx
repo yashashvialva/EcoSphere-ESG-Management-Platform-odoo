@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await authService.getProfile();
-      setUser(res.data);
+      setUser(res);
       setError(null);
     } catch (err) {
       console.error('Failed to load user', err);
@@ -46,10 +46,10 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await authService.login(credentials);
-      localStorage.setItem('token', res.data.token);
-      setUser(res.data.user);
+      localStorage.setItem('token', res.token);
+      setUser(res.user);
       setError(null);
-      return res.data;
+      return res;
     } catch (err) {
       setError(err.message || 'Login failed');
       throw err;
@@ -62,10 +62,10 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await authService.register(userData);
-      localStorage.setItem('token', res.data.token);
-      setUser(res.data.user);
+      localStorage.setItem('token', res.token);
+      setUser(res.user);
       setError(null);
-      return res.data;
+      return res;
     } catch (err) {
       setError(err.message || 'Registration failed');
       throw err;
