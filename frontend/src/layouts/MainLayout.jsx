@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Award, BookOpen, Leaf, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Award, BookOpen, Leaf, LogOut, Shield, FileText, ClipboardCheck, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function MainLayout() {
   const { user, logout } = useAuth();
@@ -8,10 +8,18 @@ export default function MainLayout() {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Governance', href: '/governance', icon: Shield, children: [
+      { name: 'Policies', href: '/governance/policies', icon: FileText },
+      { name: 'Audits', href: '/governance/audits', icon: ClipboardCheck },
+      { name: 'Compliance', href: '/governance/compliance-issues', icon: AlertTriangle },
+      { name: 'Acknowledgements', href: '/governance/acknowledgements', icon: CheckCircle },
+    ]},
     { name: 'CSR Activities', href: '/social/csr-activities', icon: Leaf },
     { name: 'Training', href: '/social/training', icon: BookOpen },
     { name: 'Diversity', href: '/social/diversity', icon: Users },
   ];
+
+  const isActive = (href) => location.pathname === href || (href !== '/' && location.pathname.startsWith(href));
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -24,21 +32,46 @@ export default function MainLayout() {
         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
           {navigation.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
+            const active = isActive(item.href);
             
             return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  isActive 
-                    ? 'bg-primary-50 text-primary-700' 
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-primary-600' : 'text-gray-400'}`} />
-                {item.name}
-              </Link>
+              <div key={item.name}>
+                <Link
+                  to={item.href}
+                  className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                    active 
+                      ? 'bg-primary-50 text-primary-700' 
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <Icon className={`mr-3 h-5 w-5 ${active ? 'text-primary-600' : 'text-gray-400'}`} />
+                  {item.name}
+                </Link>
+
+                {/* Governance sub-nav */}
+                {item.children && isActive(item.href) && (
+                  <div className="ml-8 mt-1 space-y-1">
+                    {item.children.map((child) => {
+                      const ChildIcon = child.icon;
+                      const childActive = isActive(child.href);
+                      return (
+                        <Link
+                          key={child.name}
+                          to={child.href}
+                          className={`flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${
+                            childActive
+                              ? 'text-primary-700 font-medium'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          <ChildIcon className={`mr-2 h-4 w-4 ${childActive ? 'text-primary-600' : 'text-gray-400'}`} />
+                          {child.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             )
           })}
         </nav>
