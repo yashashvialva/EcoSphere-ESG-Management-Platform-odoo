@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Award, BookOpen, Leaf, LogOut, Trophy } from 'lucide-react';
+import { LayoutDashboard, Users, Award, BookOpen, Leaf, LogOut, Trophy, Medal, Gift } from 'lucide-react';
 
 export default function MainLayout() {
   const { user, logout } = useAuth();
@@ -10,6 +10,8 @@ export default function MainLayout() {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Leaderboard', href: '/gamification/leaderboard', icon: Trophy },
     { name: 'Challenges', href: '/gamification/challenges', icon: Award },
+    { name: 'Badges', href: '/gamification/badges', icon: Medal },
+    { name: 'Rewards', href: '/gamification/rewards', icon: Gift },
     { name: 'CSR Activities', href: '/social/csr-activities', icon: Leaf },
     { name: 'Training', href: '/social/training', icon: BookOpen },
     { name: 'Diversity', href: '/social/diversity', icon: Users },
