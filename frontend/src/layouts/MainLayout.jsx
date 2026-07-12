@@ -97,6 +97,64 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Mobile sidebar drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 flex z-40 md:hidden" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-secondary">
+            <div className="absolute top-0 right-0 -mr-12 pt-2">
+              <button
+                type="button"
+                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="sr-only">Close sidebar</span>
+                <X className="h-6 w-6 text-white" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="flex-shrink-0 flex items-center px-4">
+              <h1 className="text-xl font-bold text-white tracking-wider">EcoSphere</h1>
+            </div>
+            <div className="mt-5 flex-1 h-0 overflow-y-auto">
+              <nav className="px-2 space-y-1">
+                {filteredNav.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`${
+                      location.pathname.startsWith(item.href)
+                        ? 'bg-gray-800 text-white'
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    } group flex items-center px-2 py-2 text-base font-medium rounded-md`}
+                  >
+                    <item.icon
+                      className={`${
+                        location.pathname.startsWith(item.href) ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-300'
+                      } mr-4 flex-shrink-0 h-6 w-6`}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+            <div className="flex-shrink-0 flex bg-gray-800 p-4">
+              <div className="flex items-center w-full">
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-white">{user?.firstName} {user?.lastName}</p>
+                  <p className="text-xs font-medium text-gray-400 group-hover:text-gray-300">{user?.role}</p>
+                </div>
+                <button onClick={logout} className="text-gray-400 hover:text-white p-2" title="Logout">
+                  <LogOut className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-14" aria-hidden="true"></div>
+        </div>
+      )}
     </div>
   );
 };
