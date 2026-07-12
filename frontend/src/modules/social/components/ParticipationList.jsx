@@ -54,14 +54,14 @@ export default function ParticipationList({ activityId, initialParticipations = 
             {p.approvalStatus === 'PENDING' && (
               <div className="flex space-x-2">
                 <button
-                  onClick={() => handleEvaluate(p.id, 'Approved')}
+                  onClick={() => handleEvaluate(p.id, 'APPROVED')}
                   disabled={loadingId === p.id}
                   className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
                 >
                   <ShieldCheck className="w-4 h-4 mr-1" /> Approve
                 </button>
                 <button
-                  onClick={() => handleEvaluate(p.id, 'Rejected')}
+                  onClick={() => handleEvaluate(p.id, 'REJECTED')}
                   disabled={loadingId === p.id}
                   className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
                 >
