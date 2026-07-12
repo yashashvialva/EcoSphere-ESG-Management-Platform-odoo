@@ -19,7 +19,7 @@ const getAllComplianceIssues = async (filters = {}, pagination = {}) => {
     prisma.complianceIssue.findMany({
       where,
       skip,
-      take: limit,
+      take: Number(limit),
       orderBy: { createdAt: 'desc' },
       include: {
         department: { select: { id: true, name: true, code: true } },

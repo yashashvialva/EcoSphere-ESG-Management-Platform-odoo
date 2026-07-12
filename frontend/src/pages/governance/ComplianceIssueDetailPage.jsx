@@ -19,7 +19,7 @@ export default function ComplianceIssueDetailPage() {
       setError(null);
       setLoading(true);
       const res = await getComplianceIssueById(id);
-      setIssue(res.data.data);
+      setIssue(res.data);
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load compliance issue');
     } finally {
@@ -33,7 +33,7 @@ export default function ComplianceIssueDetailPage() {
     if (!window.confirm(`Change status to ${newStatus}?`)) return;
     try {
       setActionLoading(true);
-      await updateComplianceIssueStatus(id, { status: newStatus });
+      await updateComplianceIssueStatus(id, newStatus);
       await load();
     } catch (err) {
       alert(err.response?.data?.error?.message || 'Failed to update status');
@@ -46,7 +46,7 @@ export default function ComplianceIssueDetailPage() {
     e.preventDefault();
     try {
       setActionLoading(true);
-      await resolveComplianceIssue(id, { resolutionNotes });
+      await resolveComplianceIssue(id, resolutionNotes);
       setShowResolveForm(false);
       await load();
     } catch (err) {

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getPolicies } from '../../services/governanceApi';
+import CreatePolicyModal from './components/CreatePolicyModal';
 import { StatusBadge } from './components/GovernanceBadges';
 
 export default function PoliciesPage() {
@@ -11,6 +12,7 @@ export default function PoliciesPage() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const fetchData = useCallback(async (page = 1) => {
     try {
@@ -20,8 +22,8 @@ export default function PoliciesPage() {
       if (status) params.status = status;
       if (search.trim()) params.search = search.trim();
       const res = await getPolicies(params);
-      setPolicies(res.data.data || []);
-      setPagination(res.data.pagination || { page, limit: 10, total: 0, totalPages: 0 });
+      setPolicies(res.data || []);
+      setPagination(res.pagination || { page, limit: 10, total: 0, totalPages: 0 });
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load policies');
     } finally {
@@ -47,9 +49,9 @@ export default function PoliciesPage() {
             <p className="text-sm text-slate-500 mt-0.5">Manage and track company governance policies</p>
           </div>
         </div>
-        <Link to="/governance/policies" className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-sm shadow-emerald-200/50 text-white rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:-translate-y-0.5">
+        <button onClick={() => setIsCreateModalOpen(true)} className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 shadow-sm shadow-emerald-200/50 text-white rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:-translate-y-0.5">
           <Plus className="h-4 w-4" /> Create Policy
-        </Link>
+        </button>
       </div>
 
       {/* Filters */}
@@ -95,7 +97,7 @@ export default function PoliciesPage() {
         ) : policies.length === 0 ? (
           <div className="text-center py-20 text-slate-400">
             <FileText className="h-12 w-12 mx-auto mb-4 opacity-40 text-emerald-500" />
-            <p className="font-semibold text-slate-600">No policies found</p>
+            <p className="font-semibold text-slate-600">No policies found (Data Length: {policies?.length}, Type: {typeof policies})</p>
             <p className="text-sm mt-1">Try adjusting your filters or create a new policy.</p>
           </div>
         ) : (
@@ -156,6 +158,7 @@ export default function PoliciesPage() {
           </div>
         )}
       </div>
+      <CreatePolicyModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onSuccess={() => fetchData(1)} />
     </div>
   );
 }

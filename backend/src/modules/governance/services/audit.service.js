@@ -18,7 +18,7 @@ const getAllAudits = async (filters = {}, pagination = {}) => {
     prisma.audit.findMany({
       where,
       skip,
-      take: limit,
+      take: Number(limit),
       orderBy: { createdAt: 'desc' },
       include: {
         department: { select: { id: true, name: true, code: true } },

@@ -19,7 +19,7 @@ export default function AcknowledgementsPage() {
       setError(null);
       setLoading(true);
       const res = await getMyAcknowledgements();
-      setAcks(res.data.data || []);
+      setAcks(res.data || []);
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load acknowledgements');
     } finally {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Plus, ClipboardCheck, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { getAudits, createAudit } from '../../services/governanceApi';
 import { StatusBadge, TypeBadge } from './components/GovernanceBadges';
+import CreateAuditModal from './components/CreateAuditModal';
 
 export default function AuditsPage() {
   const [audits, setAudits] = useState([]);
@@ -32,8 +33,8 @@ export default function AuditsPage() {
       if (type) params.auditType = type;
       
       const res = await getAudits(params);
-      setAudits(res.data.data || []);
-      setPagination(res.data.pagination || { page, limit: 10, total: 0, totalPages: 0 });
+      setAudits(res.data || []);
+      setPagination(res.pagination || { page, limit: 10, total: 0, totalPages: 0 });
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load audits');
     } finally {
@@ -195,97 +196,7 @@ export default function AuditsPage() {
         )}
       </div>
 
-      {/* Create Modal */}
-      {showCreate && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 font-sans">
-          <div className="bg-white rounded-2xl shadow-xl shadow-emerald-900/10 w-full max-w-md overflow-hidden border border-emerald-100">
-            <div className="flex items-center justify-between p-5 bg-gradient-to-r from-emerald-50/50 to-teal-50/50 border-b border-emerald-100">
-              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2"><ClipboardCheck className="h-5 w-5 text-emerald-600" /> Schedule Audit</h2>
-              <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-emerald-200">
-                <X className="h-5 w-5 text-slate-500" />
-              </button>
-            </div>
-            <form onSubmit={handleCreate} className="p-5 space-y-4">
-              {createError && <div className="p-4 text-sm font-medium text-red-700 bg-red-50 border border-red-100 rounded-xl">{createError}</div>}
-              
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Title *</label>
-                <input
-                  required
-                  type="text"
-                  value={createData.title}
-                  onChange={e => setCreateData({...createData, title: e.target.value})}
-                  className="w-full rounded-xl border border-emerald-100 bg-emerald-50/30 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Department</label>
-                <input
-                  type="text"
-                  value={createData.department}
-                  onChange={e => setCreateData({...createData, department: e.target.value})}
-                  className="w-full rounded-xl border border-emerald-100 bg-emerald-50/30 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Audit Type *</label>
-                <select
-                  value={createData.auditType}
-                  onChange={e => setCreateData({...createData, auditType: e.target.value})}
-                  className="w-full rounded-xl border border-emerald-100 bg-emerald-50/30 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
-                >
-                  <option value="INTERNAL">Internal</option>
-                  <option value="EXTERNAL">External</option>
-                  <option value="COMPLIANCE">Compliance</option>
-                  <option value="ESG">ESG</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Auditor Employee UUID *</label>
-                <input
-                  required
-                  type="text"
-                  placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
-                  value={createData.auditorEmployeeId}
-                  onChange={e => setCreateData({...createData, auditorEmployeeId: e.target.value})}
-                  className="w-full rounded-xl border border-emerald-100 bg-emerald-50/30 px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Scheduled Date *</label>
-                <input
-                  required
-                  type="date"
-                  value={createData.scheduledDate}
-                  onChange={e => setCreateData({...createData, scheduledDate: e.target.value})}
-                  className="w-full rounded-xl border border-emerald-100 bg-emerald-50/30 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowCreate(false)}
-                  className="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all shadow-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={creating}
-                  className="px-5 py-2.5 text-sm font-semibold text-white bg-emerald-500 rounded-xl hover:bg-emerald-600 disabled:opacity-50 transition-all shadow-sm shadow-emerald-200/50"
-                >
-                  {creating ? 'Scheduling...' : 'Schedule'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <CreateAuditModal isOpen={showCreate} onClose={() => setShowCreate(false)} onSuccess={() => fetchData(1)} />
     </div>
   );
 }

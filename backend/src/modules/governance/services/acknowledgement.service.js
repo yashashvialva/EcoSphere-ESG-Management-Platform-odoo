@@ -22,7 +22,7 @@ const getAllAcknowledgements = async (filters = {}, pagination = {}) => {
     prisma.policyAcknowledgement.findMany({
       where,
       skip,
-      take: limit,
+      take: Number(limit),
       orderBy: { createdAt: 'desc' },
       include: {
         policy: {

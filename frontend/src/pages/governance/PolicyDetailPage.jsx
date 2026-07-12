@@ -24,8 +24,8 @@ export default function PolicyDetailPage() {
         getPolicyById(id),
         getAcknowledgementStats(id).catch(() => ({ data: { data: null } })),
       ]);
-      setPolicy(polRes.data.data);
-      setStats(statsRes.data.data);
+      setPolicy(polRes.data);
+      setStats(statsRes.data);
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load policy');
     } finally {
@@ -41,7 +41,7 @@ export default function PolicyDetailPage() {
     try {
       setActionLoading(true);
       const res = await updatePolicyStatus(id, newStatus);
-      setPolicy(res.data.data);
+      setPolicy(res.data);
     } catch (err) {
       alert(err.response?.data?.error?.message || 'Action failed');
     } finally {
@@ -68,7 +68,7 @@ export default function PolicyDetailPage() {
     try {
       setActionLoading(true);
       const res = await distributePolicy(id, ids);
-      setDistributeMsg(`Distributed to ${res.data.data?.distributed || ids.length} employee(s)`);
+      setDistributeMsg(`Distributed to ${res.data?.distributed || ids.length} employee(s)`);
       setEmployeeIdsInput('');
       setShowDistribute(false);
       load();

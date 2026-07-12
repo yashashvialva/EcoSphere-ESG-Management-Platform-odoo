@@ -24,7 +24,7 @@ const getAllPolicies = async (filters = {}, pagination = {}) => {
     prisma.esgPolicy.findMany({
       where,
       skip,
-      take: limit,
+      take: Number(limit),
       orderBy: { createdAt: 'desc' },
       include: {
         ownerEmployee: {

@@ -8,6 +8,7 @@ const policyController = require('../controllers/policy.controller');
 const acknowledgementController = require('../controllers/acknowledgement.controller');
 const auditController = require('../controllers/audit.controller');
 const complianceIssueController = require('../controllers/complianceIssue.controller');
+const referenceRoutes = require('./reference.routes');
 
 // Validators – body schemas
 const {
@@ -39,6 +40,9 @@ const router = Router();
 
 // All governance routes require authentication
 router.use(authenticate);
+
+// ─── Reference Data ─────────────────────────────────────────────
+router.use('/reference', referenceRoutes);
 
 // ─── ESG Policies ────────────────────────────────────────────────
 

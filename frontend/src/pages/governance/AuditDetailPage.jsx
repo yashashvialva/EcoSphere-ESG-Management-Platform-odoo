@@ -22,7 +22,7 @@ export default function AuditDetailPage() {
       setError(null);
       setLoading(true);
       const res = await getAuditById(id);
-      setAudit(res.data.data);
+      setAudit(res.data);
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Failed to load audit');
     } finally {

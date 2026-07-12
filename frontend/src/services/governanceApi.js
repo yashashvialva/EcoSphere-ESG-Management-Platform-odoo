@@ -1,5 +1,8 @@
 import api from './api';
 
+export const getEmployees = () => api.get('/governance/reference/employees');
+export const getDepartments = () => api.get('/governance/reference/departments');
+
 // ─── Policies ────────────────────────────────────────────────────────────────
 
 export const getPolicies = (params) =>
