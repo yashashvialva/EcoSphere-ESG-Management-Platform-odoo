@@ -7,6 +7,16 @@ import { AuthProvider, useAuth } from './store/authStore';
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
 
+// Governance pages
+import GovernanceDashboard from './pages/governance/GovernanceDashboard';
+import PoliciesPage from './pages/governance/PoliciesPage';
+import PolicyDetailPage from './pages/governance/PolicyDetailPage';
+import AcknowledgementsPage from './pages/governance/AcknowledgementsPage';
+import AuditsPage from './pages/governance/AuditsPage';
+import AuditDetailPage from './pages/governance/AuditDetailPage';
+import ComplianceIssuesPage from './pages/governance/ComplianceIssuesPage';
+import ComplianceIssueDetailPage from './pages/governance/ComplianceIssueDetailPage';
+
 // Environmental Pages
 import EmissionFactorsPage from './modules/environmental/pages/EmissionFactorsPage';
 import CarbonTransactionsPage from './modules/environmental/pages/CarbonTransactionsPage';
@@ -45,7 +55,7 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<ProtectedRoute requiredPermission="environmental.read"><EnvironmentalDashboard /></ProtectedRoute>} />
         
-        {/* Developer 1 - Environmental Routes */}
+        {/* Environmental Routes */}
         <Route path="environmental">
           <Route index element={<Navigate to="emission-factors" replace />} />
           <Route path="emission-factors" element={<ProtectedRoute requiredPermission="environmental.read"><EmissionFactorsPage /></ProtectedRoute>} />
@@ -54,12 +64,24 @@ const AppRoutes = () => {
           <Route path="product-profiles" element={<ProtectedRoute requiredPermission="environmental.read"><ProductProfilesPage /></ProtectedRoute>} />
         </Route>
 
-        {/* Developer 2 - Social Routes */}
+        {/* Social Routes */}
         <Route path="social">
           <Route path="csr-activities" element={<ProtectedRoute><CsrActivityList /></ProtectedRoute>} />
           <Route path="csr-activities/:id" element={<ProtectedRoute><CsrActivityDetail /></ProtectedRoute>} />
           <Route path="training" element={<ProtectedRoute><TrainingList /></ProtectedRoute>} />
           <Route path="diversity" element={<ProtectedRoute><DiversityDashboard /></ProtectedRoute>} />
+        </Route>
+
+        {/* Governance Routes */}
+        <Route path="governance">
+          <Route index element={<GovernanceDashboard />} />
+          <Route path="policies" element={<PoliciesPage />} />
+          <Route path="policies/:id" element={<PolicyDetailPage />} />
+          <Route path="acknowledgements" element={<AcknowledgementsPage />} />
+          <Route path="audits" element={<AuditsPage />} />
+          <Route path="audits/:id" element={<AuditDetailPage />} />
+          <Route path="compliance-issues" element={<ComplianceIssuesPage />} />
+          <Route path="compliance-issues/:id" element={<ComplianceIssueDetailPage />} />
         </Route>
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />

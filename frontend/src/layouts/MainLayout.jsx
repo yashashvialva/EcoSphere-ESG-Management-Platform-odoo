@@ -21,11 +21,14 @@ import {
   CheckCircle2,
   AlertTriangle,
   Info,
-  BookOpen
-
+  BookOpen,
+  Shield,
+  FileText,
+  ClipboardCheck,
+  CheckCircle
 } from 'lucide-react';
 
-// Static sample notifications — replace with real API data when ready
+// Static sample notifications
 const SAMPLE_NOTIFICATIONS = [
   { id: 1, type: 'success', message: 'ESG Goal "Reduce Scope 1" reached 80%', time: '2 min ago' },
   { id: 2, type: 'warning', message: 'Carbon transaction pending review', time: '15 min ago' },
@@ -67,7 +70,12 @@ const MainLayout = () => {
     { name: 'Training', href: '/social/training', icon: BookOpen },
     { name: 'Diversity', href: '/social/diversity', icon: Users },
     
-    { name: 'Governance',          href: '/governance',                          icon: ShieldCheck, permission: 'governance.read' },
+    { name: 'Governance',          href: '/governance',                          icon: ShieldCheck, permission: 'governance.read', children: [
+      { name: 'Policies', href: '/governance/policies', icon: FileText },
+      { name: 'Audits', href: '/governance/audits', icon: ClipboardCheck },
+      { name: 'Compliance', href: '/governance/compliance-issues', icon: AlertTriangle },
+      { name: 'Acknowledgements', href: '/governance/acknowledgements', icon: CheckCircle },
+    ]},
     { name: 'Gamification',        href: '/gamification',                        icon: Award,       permission: 'gamification.read' },
     { name: 'Settings',            href: '/settings',                            icon: Settings,    permission: 'settings.manage' },
   ];
@@ -116,35 +124,65 @@ const MainLayout = () => {
         {/* Nav */}
         <nav className="flex-1 flex flex-col overflow-y-auto py-4 px-3 space-y-0.5">
           {filteredNav.map((item) => {
-            const isActive = location.pathname.startsWith(item.href);
+            const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
             return (
-              <Link
-                key={item.name}
-                to={item.href}
-                title={isCollapsed ? item.name : ''}
-                className={`group flex items-center py-2.5 rounded-xl transition-all duration-200 relative
-                  ${isCollapsed ? 'justify-center px-0' : 'px-3'}
-                  ${isActive ? 'shadow-sm' : ''}`}
-                style={
-                  isActive
-                    ? { background: '#F27D88', color: '#ffffff' }
-                    : { color: '#2F2F2F' }
-                }
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = '#FFF8C9'; }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = ''; }}
-              >
-                <item.icon
-                  className={`flex-shrink-0 h-5 w-5 transition-all duration-150 group-hover:scale-105
-                    ${isCollapsed ? '' : 'mr-3'}`}
-                  style={{ color: isActive ? '#ffffff' : '#836A78' }}
-                />
-                {!isCollapsed && (
-                  <span className="text-sm font-semibold">{item.name}</span>
+              <div key={item.name}>
+                <Link
+                  to={item.href}
+                  title={isCollapsed ? item.name : ''}
+                  className={`group flex items-center py-2.5 rounded-xl transition-all duration-200 relative
+                    ${isCollapsed ? 'justify-center px-0' : 'px-3'}
+                    ${isActive ? 'shadow-sm' : ''}`}
+                  style={
+                    isActive
+                      ? { background: '#F27D88', color: '#ffffff' }
+                      : { color: '#2F2F2F' }
+                  }
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = '#FFF8C9'; }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = ''; }}
+                >
+                  <item.icon
+                    className={`flex-shrink-0 h-5 w-5 transition-all duration-150 group-hover:scale-105
+                      ${isCollapsed ? '' : 'mr-3'}`}
+                    style={{ color: isActive ? '#ffffff' : '#836A78' }}
+                  />
+                  {!isCollapsed && (
+                    <span className="text-sm font-semibold">{item.name}</span>
+                  )}
+                  {isActive && (
+                    <span className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-white rounded-r-full" />
+                  )}
+                </Link>
+
+                {/* Sub-menu rendering for active item */}
+                {!isCollapsed && item.children && location.pathname.startsWith(item.href) && (
+                  <div className="ml-7 mt-1 space-y-1 mb-2">
+                    {item.children.map((child) => {
+                      const childActive = location.pathname === child.href || location.pathname.startsWith(child.href + '/');
+                      return (
+                        <Link
+                          key={child.name}
+                          to={child.href}
+                          className={`flex items-center px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                            childActive
+                              ? 'text-white'
+                              : 'hover:text-white'
+                          }`}
+                          style={{
+                            color: childActive ? '#ffffff' : '#2F2F2F',
+                            background: childActive ? '#F27D8888' : 'transparent',
+                          }}
+                          onMouseEnter={e => { if (!childActive) e.currentTarget.style.background = '#FFF8C9'; }}
+                          onMouseLeave={e => { if (!childActive) e.currentTarget.style.background = ''; }}
+                        >
+                          <child.icon className="mr-2 h-4 w-4" style={{ color: childActive ? '#ffffff' : '#836A78' }} />
+                          {child.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 )}
-                {isActive && (
-                  <span className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-white rounded-r-full" />
-                )}
-              </Link>
+              </div>
             );
           })}
         </nav>
@@ -329,27 +367,52 @@ const MainLayout = () => {
             </div>
             <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
               {filteredNav.map((item) => {
-                const isActive = location.pathname.startsWith(item.href);
+                const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
                 return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center px-3 py-3 rounded-xl transition-all duration-150"
-                    style={
-                      isActive
-                        ? { background: '#F27D88', color: '#ffffff' }
-                        : { color: '#2F2F2F' }
-                    }
-                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = '#FFF8C9'; }}
-                    onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = ''; }}
-                  >
-                    <item.icon
-                      className="flex-shrink-0 h-6 w-6 mr-4"
-                      style={{ color: isActive ? '#ffffff' : '#836A78' }}
-                    />
-                    <span className="text-sm font-semibold">{item.name}</span>
-                  </Link>
+                  <div key={item.name}>
+                    <Link
+                      to={item.href}
+                      onClick={() => !item.children && setIsMobileMenuOpen(false)}
+                      className="flex items-center px-3 py-3 rounded-xl transition-all duration-150"
+                      style={
+                        isActive
+                          ? { background: '#F27D88', color: '#ffffff' }
+                          : { color: '#2F2F2F' }
+                      }
+                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = '#FFF8C9'; }}
+                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = ''; }}
+                    >
+                      <item.icon
+                        className="flex-shrink-0 h-6 w-6 mr-4"
+                        style={{ color: isActive ? '#ffffff' : '#836A78' }}
+                      />
+                      <span className="text-sm font-semibold">{item.name}</span>
+                    </Link>
+                    
+                    {/* Mobile Submenu */}
+                    {item.children && location.pathname.startsWith(item.href) && (
+                      <div className="ml-8 mt-1 space-y-1 mb-2">
+                        {item.children.map((child) => {
+                          const childActive = location.pathname === child.href || location.pathname.startsWith(child.href + '/');
+                          return (
+                            <Link
+                              key={child.name}
+                              to={child.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className={`flex items-center px-3 py-2 text-xs font-semibold rounded-lg transition-colors`}
+                              style={{
+                                color: childActive ? '#ffffff' : '#2F2F2F',
+                                background: childActive ? '#F27D8888' : 'transparent',
+                              }}
+                            >
+                              <child.icon className="mr-2 h-4 w-4" style={{ color: childActive ? '#ffffff' : '#836A78' }} />
+                              {child.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </nav>
