@@ -8,10 +8,12 @@ import AuthLayout from './layouts/AuthLayout';
 
 import EmissionFactorsPage from './modules/environmental/pages/EmissionFactorsPage';
 import CarbonTransactionsPage from './modules/environmental/pages/CarbonTransactionsPage';
+import EsgGoalsPage from './modules/environmental/pages/EsgGoalsPage';
+import ProductProfilesPage from './modules/environmental/pages/ProductProfilesPage';
+import EnvironmentalDashboard from './modules/environmental/pages/EnvironmentalDashboard';
 
 // Placeholder Pages (To be implemented)
 const LoginPage = () => <div className="p-8">Login Page Placeholder</div>;
-const Dashboard = () => <div className="p-8"><h1 className="text-2xl font-bold">Dashboard</h1></div>;
 
 const ProtectedRoute = ({ children, requiredPermission }) => {
   const { isAuthenticated, loading, hasPermission } = useAuth();
@@ -34,13 +36,15 @@ const AppRoutes = () => {
       
       <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="dashboard" element={<ProtectedRoute requiredPermission="environmental.read"><EnvironmentalDashboard /></ProtectedRoute>} />
         
         {/* Developer 1 - Environmental Routes */}
         <Route path="environmental">
           <Route index element={<Navigate to="emission-factors" replace />} />
           <Route path="emission-factors" element={<ProtectedRoute requiredPermission="environmental.read"><EmissionFactorsPage /></ProtectedRoute>} />
           <Route path="carbon-transactions" element={<ProtectedRoute requiredPermission="environmental.read"><CarbonTransactionsPage /></ProtectedRoute>} />
+          <Route path="esg-goals" element={<ProtectedRoute requiredPermission="environmental.read"><EsgGoalsPage /></ProtectedRoute>} />
+          <Route path="product-profiles" element={<ProtectedRoute requiredPermission="environmental.read"><ProductProfilesPage /></ProtectedRoute>} />
         </Route>
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />
