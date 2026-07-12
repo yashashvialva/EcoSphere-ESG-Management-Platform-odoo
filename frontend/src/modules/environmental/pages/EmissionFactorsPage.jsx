@@ -159,8 +159,8 @@ const EmissionFactorsPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{factor.unit}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">{Number(factor.factor).toFixed(4)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${factor.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                        {factor.is_active ? 'Active' : 'Inactive'}
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${factor.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        {factor.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     {canManage && (

@@ -17,9 +17,9 @@ const EsgGoalForm = ({ initialData = null, onSubmit, onCancel, isLoading }) => {
   useEffect(() => {
     if (initialData) {
       setFormData({
-        departmentId: initialData.department_id || user?.departmentId || '',
-        targetValue: initialData.target_value || '',
-        currentValue: initialData.current_value || 0,
+        departmentId: initialData.departmentId || user?.departmentId || '',
+        targetValue: initialData.targetValue || '',
+        currentValue: initialData.currentValue || 0,
         unit: initialData.unit || '',
         deadline: initialData.deadline ? new Date(initialData.deadline).toISOString().split('T')[0] : '',
         description: initialData.description || '',

@@ -24,7 +24,7 @@ const CarbonTransactionForm = ({ onSubmit, onCancel, isLoading }) => {
         setLoadingFactors(true);
         const res = await environmentalApi.getEmissionFactors({ limit: 100 });
         // Filter only active factors
-        setEmissionFactors(res.data.filter(f => f.is_active));
+        setEmissionFactors(res.data.filter(f => f.isActive));
       } catch (err) {
         console.error("Failed to load emission factors", err);
       } finally {

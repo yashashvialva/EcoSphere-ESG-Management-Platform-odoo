@@ -174,7 +174,7 @@ const CarbonTransactionsPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-gray-900">{format(new Date(tx.transaction_date), 'MMM dd, yyyy')}</span>
+                        <span className="text-sm text-gray-900">{format(new Date(tx.transactionDate), 'MMM dd, yyyy')}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -182,15 +182,15 @@ const CarbonTransactionsPage = () => {
                       <div className="text-xs text-gray-500">{tx.department?.code}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{tx.emission_factor?.source}</div>
-                      <div className="text-xs text-gray-500">{tx.source_type} {tx.reference_id && `• Ref: ${tx.reference_id}`}</div>
+                      <div className="text-sm font-medium text-gray-900">{tx.emissionFactor?.source}</div>
+                      <div className="text-xs text-gray-500">{tx.sourceType} {tx.referenceId && `• Ref: ${tx.referenceId}`}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {Number(tx.quantity).toLocaleString()} <span className="text-gray-500 text-xs ml-1">{tx.emission_factor?.unit}</span>
+                      {Number(tx.quantity).toLocaleString()} <span className="text-gray-500 text-xs ml-1">{tx.emissionFactor?.unit}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                        {Number(tx.emission_value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {Number(tx.emissionValue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </td>
                   </tr>
