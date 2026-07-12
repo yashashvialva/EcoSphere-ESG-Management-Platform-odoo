@@ -10,6 +10,7 @@ const authRoutes = require('./modules/auth/routes/authRoutes');
 const environmentalRoutes = require('./modules/environmental/routes/environmentalRoutes');
 const socialRoutes = require('./modules/social/routes/index');
 const gamificationRoutes = require('./modules/gamification');
+const governanceRoutes = require('./modules/governance');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/environmental', environmentalRoutes);
 app.use('/api/v1/social', socialRoutes);
 app.use('/api/v1/gamification', gamificationRoutes);
+app.use('/api/v1/governance', governanceRoutes);
 
 // ─── 404 Handler ─────────────────────────────────────────────
 app.use('*', (req, res) => {

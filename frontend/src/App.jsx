@@ -8,6 +8,17 @@ import Challenges from './pages/gamification/Challenges';
 import Leaderboard from './pages/gamification/Leaderboard';
 import Badges from './pages/gamification/Badges';
 import Rewards from './pages/gamification/Rewards';
+
+// Governance Pages
+import GovernanceDashboard from './pages/governance/GovernanceDashboard';
+import PoliciesPage from './pages/governance/PoliciesPage';
+import PolicyDetailPage from './pages/governance/PolicyDetailPage';
+import AcknowledgementsPage from './pages/governance/AcknowledgementsPage';
+import AuditsPage from './pages/governance/AuditsPage';
+import AuditDetailPage from './pages/governance/AuditDetailPage';
+import ComplianceIssuesPage from './pages/governance/ComplianceIssuesPage';
+import ComplianceIssueDetailPage from './pages/governance/ComplianceIssueDetailPage';
+
 // Layouts
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
@@ -74,6 +85,17 @@ const AppRoutes = () => {
           <Route path="leaderboard" element={<ProtectedRoute requiredPermission="gamification.read"><Leaderboard /></ProtectedRoute>} />
           <Route path="badges" element={<ProtectedRoute requiredPermission="gamification.read"><Badges /></ProtectedRoute>} />
           <Route path="rewards" element={<ProtectedRoute requiredPermission="gamification.read"><Rewards /></ProtectedRoute>} />
+        </Route>
+        {/* Developer 4 - Governance Routes */}
+        <Route path="governance">
+          <Route index element={<ProtectedRoute requiredPermission="governance.read"><GovernanceDashboard /></ProtectedRoute>} />
+          <Route path="policies" element={<ProtectedRoute requiredPermission="governance.read"><PoliciesPage /></ProtectedRoute>} />
+          <Route path="policies/:id" element={<ProtectedRoute requiredPermission="governance.read"><PolicyDetailPage /></ProtectedRoute>} />
+          <Route path="acknowledgements" element={<ProtectedRoute requiredPermission="governance.read"><AcknowledgementsPage /></ProtectedRoute>} />
+          <Route path="audits" element={<ProtectedRoute requiredPermission="governance.read"><AuditsPage /></ProtectedRoute>} />
+          <Route path="audits/:id" element={<ProtectedRoute requiredPermission="governance.read"><AuditDetailPage /></ProtectedRoute>} />
+          <Route path="compliance-issues" element={<ProtectedRoute requiredPermission="governance.read"><ComplianceIssuesPage /></ProtectedRoute>} />
+          <Route path="compliance-issues/:id" element={<ProtectedRoute requiredPermission="governance.read"><ComplianceIssueDetailPage /></ProtectedRoute>} />
         </Route>
         
         <Route path="unauthorized" element={<div className="p-8">You do not have permission to view this page.</div>} />
