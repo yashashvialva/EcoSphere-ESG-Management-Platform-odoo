@@ -37,7 +37,7 @@ const authenticate = async (req, res, next) => {
       },
     });
 
-    if (!employee || !employee.isActive) {
+    if (!employee || !employee.is_active) {
       return res.status(401).json(
         ApiResponse.error('User not found or inactive.', 401)
       );
@@ -47,11 +47,11 @@ const authenticate = async (req, res, next) => {
     req.user = {
       id: employee.id,
       email: employee.email,
-      firstName: employee.firstName,
-      lastName: employee.lastName,
-      roleId: employee.roleId,
+      firstName: employee.first_name,
+      lastName: employee.last_name,
+      roleId: employee.role_id,
       roleName: employee.role.name,
-      departmentId: employee.departmentId,
+      departmentId: employee.department_id,
       departmentName: employee.department?.name,
       permissions: employee.role.permissions.map((rp) => rp.permission.code),
     };
