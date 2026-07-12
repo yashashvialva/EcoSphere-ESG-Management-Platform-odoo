@@ -1,23 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Chart as ChartJS, 
-  CategoryScale, 
-  LinearScale, 
-  BarElement, 
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title, 
-  Tooltip, 
-  Legend,
-  Filler 
-} from 'chart.js';
-import { Bar, Doughnut, Line } from 'react-chartjs-2';
-import { AlertCircle, TrendingDown, Activity, Target, Package } from 'lucide-react';
-import environmentalApi from '../services/environmentalApi';
-
-// Register Chart.js components
-ChartJS.register(
+import {
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -27,21 +10,23 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
+} from 'chart.js';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { AlertCircle, TrendingDown, Activity, Target, Package, Leaf, RefreshCw } from 'lucide-react';
+import environmentalApi from '../services/environmentalApi';
+
+ChartJS.register(
+  CategoryScale, LinearScale, BarElement, PointElement,
+  LineElement, ArcElement, Title, Tooltip, Legend, Filler
 );
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const CHART_COLORS = [
-  'rgba(16, 185, 129, 0.8)',   // emerald
-  'rgba(59, 130, 246, 0.8)',   // blue
-  'rgba(249, 115, 22, 0.8)',   // orange
-  'rgba(168, 85, 247, 0.8)',   // purple
-  'rgba(236, 72, 153, 0.8)',   // pink
-  'rgba(20, 184, 166, 0.8)',   // teal
-  'rgba(245, 158, 11, 0.8)',   // amber
-  'rgba(99, 102, 241, 0.8)',   // indigo
-];
+// Pastel eco palette for charts
+const PIE_COLORS   = ['#9BBDAF', '#F8C7AE', '#FFF8C9', '#F27D88', '#836A78'];
+const BAR_COLOR    = '#9BBDAF';
+const LINE_COLOR   = '#F27D88';
 
 const EnvironmentalDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -49,9 +34,7 @@ const EnvironmentalDashboard = () => {
   const [error, setError] = useState(null);
   const [year, setYear] = useState(new Date().getFullYear());
 
-  useEffect(() => {
-    fetchDashboard();
-  }, [year]);
+  useEffect(() => { fetchDashboard(); }, [year]);
 
   const fetchDashboard = async () => {
     try {
@@ -69,7 +52,10 @@ const EnvironmentalDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-border-main border-t-primary" />
+          <p className="text-sm text-text-secondary font-medium">Loading dashboard…</p>
+        </div>
       </div>
     );
   }
@@ -77,9 +63,12 @@ const EnvironmentalDashboard = () => {
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 p-4 rounded-md flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3" />
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="bg-error/10 border border-error/20 p-5 rounded-2xl flex items-start space-x-3">
+          <AlertCircle className="h-5 w-5 text-error mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-error">Unable to load dashboard</p>
+            <p className="text-xs text-error/80 mt-1">{error}</p>
+          </div>
         </div>
       </div>
     );
@@ -87,18 +76,20 @@ const EnvironmentalDashboard = () => {
 
   const { summary, monthlyEmissions, categoryBreakdown, departmentBreakdown, goalsOverview } = dashboardData;
 
-  // --- Chart Data ---
+  // ── Chart data ──────────────────────────────────────────
   const monthlyChartData = {
     labels: MONTH_LABELS,
     datasets: [{
       label: `Emissions (kg CO₂e) — ${year}`,
-      data: monthlyEmissions.map((m) => m.totalEmissions),
-      backgroundColor: 'rgba(16, 185, 129, 0.2)',
-      borderColor: 'rgba(16, 185, 129, 1)',
+      data: monthlyEmissions.map(m => m.totalEmissions),
+      backgroundColor: `${LINE_COLOR}22`,
+      borderColor: LINE_COLOR,
       borderWidth: 2,
       fill: true,
       tension: 0.4,
-      pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+      pointBackgroundColor: LINE_COLOR,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
       pointRadius: 4,
     }],
   };
@@ -108,24 +99,21 @@ const EnvironmentalDashboard = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => `${Number(ctx.raw).toLocaleString()} kg CO₂e`,
-        },
-      },
+      tooltip: { callbacks: { label: ctx => `${Number(ctx.raw).toLocaleString()} kg CO₂e` } },
     },
     scales: {
-      y: { beginAtZero: true, ticks: { callback: (v) => v.toLocaleString() } },
+      x: { grid: { display: false }, border: { dash: [4, 4] } },
+      y: { beginAtZero: true, grid: { color: '#ECE8E3' }, ticks: { callback: v => v.toLocaleString() } },
     },
   };
 
   const categoryChartData = {
-    labels: categoryBreakdown.map((c) => c.category),
+    labels: categoryBreakdown.map(c => c.category),
     datasets: [{
-      data: categoryBreakdown.map((c) => c.totalEmissions),
-      backgroundColor: CHART_COLORS.slice(0, categoryBreakdown.length),
-      borderWidth: 2,
-      borderColor: '#fff',
+      data: categoryBreakdown.map(c => c.totalEmissions),
+      backgroundColor: PIE_COLORS,
+      borderWidth: 3,
+      borderColor: '#FCFBF7',
     }],
   };
 
@@ -133,16 +121,13 @@ const EnvironmentalDashboard = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { padding: 16, usePointStyle: true },
-      },
+      legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { size: 12 } } },
       tooltip: {
         callbacks: {
-          label: (ctx) => {
+          label: ctx => {
             const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
             const pct = ((ctx.raw / total) * 100).toFixed(1);
-            return `${ctx.label}: ${Number(ctx.raw).toLocaleString()} kg CO₂e (${pct}%)`;
+            return `${ctx.label}: ${Number(ctx.raw).toLocaleString()} kg (${pct}%)`;
           },
         },
       },
@@ -150,12 +135,12 @@ const EnvironmentalDashboard = () => {
   };
 
   const deptChartData = {
-    labels: departmentBreakdown.map((d) => d.department),
+    labels: departmentBreakdown.map(d => d.department),
     datasets: [{
-      label: 'Emissions by Department (kg CO₂e)',
-      data: departmentBreakdown.map((d) => d.totalEmissions),
-      backgroundColor: CHART_COLORS.slice(0, departmentBreakdown.length),
-      borderRadius: 6,
+      label: 'Emissions by Department',
+      data: departmentBreakdown.map(d => d.totalEmissions),
+      backgroundColor: PIE_COLORS,
+      borderRadius: 8,
     }],
   };
 
@@ -165,174 +150,208 @@ const EnvironmentalDashboard = () => {
     indexAxis: 'y',
     plugins: {
       legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => `${Number(ctx.raw).toLocaleString()} kg CO₂e`,
-        },
-      },
+      tooltip: { callbacks: { label: ctx => `${Number(ctx.raw).toLocaleString()} kg CO₂e` } },
     },
     scales: {
-      x: { beginAtZero: true, ticks: { callback: (v) => v.toLocaleString() } },
+      x: { beginAtZero: true, grid: { color: '#ECE8E3' }, ticks: { callback: v => v.toLocaleString() } },
+      y: { grid: { display: false } },
     },
   };
 
-  // Summary stat cards
+  // ── Stat cards ───────────────────────────────────────────
   const statCards = [
     {
       title: 'Total Emissions',
       value: `${Number(summary.totalEmissions).toLocaleString()} kg`,
-      subtitle: 'CO₂e recorded',
+      subtitle: 'CO₂e recorded this year',
       icon: TrendingDown,
-      color: 'bg-emerald-50 text-emerald-600',
+      iconBg: '#9BBDAF22',
+      iconColor: '#5E9E6F',
     },
     {
       title: 'Transactions',
       value: summary.totalTransactions,
       subtitle: 'Activities logged',
       icon: Activity,
-      color: 'bg-blue-50 text-blue-600',
+      iconBg: '#7CA9D622',
+      iconColor: '#7CA9D6',
     },
     {
       title: 'Active Goals',
       value: summary.activeGoals,
       subtitle: 'On-track or at-risk',
       icon: Target,
-      color: 'bg-amber-50 text-amber-600',
+      iconBg: '#F5C75D22',
+      iconColor: '#c49800',
     },
     {
       title: 'Products Tracked',
       value: summary.productProfiles,
       subtitle: 'Lifecycle profiles',
       icon: Package,
-      color: 'bg-purple-50 text-purple-600',
+      iconBg: '#836A7822',
+      iconColor: '#836A78',
     },
   ];
 
+  const statusStyle = {
+    ON_TRACK: 'chip-success',
+    AT_RISK:  'chip-warning',
+    ACHIEVED: 'chip-info',
+    MISSED:   'chip-error',
+  };
+
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
+    <div className="space-y-6 animate-fade-in">
+      {/* ── Page Header ───────────────────────────── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Environmental Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Real-time overview of your environmental performance.</p>
+        <div className="flex items-center space-x-3">
+          <div className="p-2.5 rounded-xl" style={{ background: '#9BBDAF22' }}>
+            <Leaf className="h-6 w-6" style={{ color: '#5E9E6F' }} />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-text-primary">Environmental Dashboard</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Real-time overview of your environmental performance</p>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <label htmlFor="year-select" className="text-sm font-medium text-gray-600">Year:</label>
+        <div className="flex items-center space-x-3">
+          <label htmlFor="year-select" className="text-sm font-medium text-text-secondary">Year</label>
           <select
             id="year-select"
             value={year}
-            onChange={(e) => setYear(parseInt(e.target.value))}
-            className="input-field w-28"
+            onChange={e => setYear(parseInt(e.target.value))}
+            className="input-field w-28 py-2"
           >
-            {[2024, 2025, 2026, 2027].map((y) => (
+            {[2023, 2024, 2025, 2026, 2027].map(y => (
               <option key={y} value={y}>{y}</option>
             ))}
           </select>
+          <button
+            onClick={fetchDashboard}
+            className="p-2 rounded-xl border border-border-main hover:bg-background transition-all text-mauve hover:text-text-primary"
+            title="Refresh"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((card) => (
-          <div key={card.title} className="card flex items-start">
-            <div className={`p-3 rounded-xl mr-4 ${card.color}`}>
-              <card.icon className="w-6 h-6" />
+      {/* ── Stat Cards ────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {statCards.map(card => (
+          <div key={card.title} className="card flex items-start space-x-4">
+            <div className="p-3 rounded-2xl flex-shrink-0" style={{ background: card.iconBg }}>
+              <card.icon className="w-6 h-6" style={{ color: card.iconColor }} />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">{card.title}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{card.subtitle}</p>
+              <p className="text-xs font-medium text-text-secondary uppercase tracking-wide">{card.title}</p>
+              <p className="text-2xl font-bold text-text-primary mt-1">{card.value}</p>
+              <p className="text-xs text-text-secondary mt-0.5">{card.subtitle}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Monthly Emissions Trend */}
+      {/* ── Monthly Emissions Trend ────────────────── */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Monthly Emissions Trend</h2>
-        <div className="h-80">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-base font-semibold text-text-primary">Monthly Emissions Trend</h2>
+            <p className="text-xs text-text-secondary mt-0.5">kg CO₂e recorded per month</p>
+          </div>
+          <span className="chip-error">Live</span>
+        </div>
+        <div className="h-72">
           <Line data={monthlyChartData} options={monthlyChartOptions} />
         </div>
       </div>
 
-      {/* Two-column: Category Breakdown + Department Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Category Breakdown */}
+      {/* ── Category + Department Breakdowns ──────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Emissions by Category</h2>
+          <h2 className="text-base font-semibold text-text-primary mb-1">Emissions by Category</h2>
+          <p className="text-xs text-text-secondary mb-4">Distribution across emission types</p>
           {categoryBreakdown.length > 0 ? (
             <div className="h-72">
               <Doughnut data={categoryChartData} options={categoryChartOptions} />
             </div>
           ) : (
-            <p className="text-sm text-gray-500 text-center py-12">No category data available.</p>
+            <div className="h-72 flex items-center justify-center">
+              <p className="text-sm text-text-secondary">No category data available.</p>
+            </div>
           )}
         </div>
 
-        {/* Department Breakdown */}
         <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Emissions by Department</h2>
+          <h2 className="text-base font-semibold text-text-primary mb-1">Emissions by Department</h2>
+          <p className="text-xs text-text-secondary mb-4">Top emitting departments this year</p>
           {departmentBreakdown.length > 0 ? (
             <div className="h-72">
               <Bar data={deptChartData} options={deptChartOptions} />
             </div>
           ) : (
-            <p className="text-sm text-gray-500 text-center py-12">No department data available.</p>
+            <div className="h-72 flex items-center justify-center">
+              <p className="text-sm text-text-secondary">No department data available.</p>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Goals Overview Table */}
-      <div className="card overflow-hidden p-0">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">ESG Goals Progress</h2>
+      {/* ── Goals Overview Table ───────────────────── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-border-main overflow-hidden">
+        <div className="px-6 py-4 border-b border-border-main flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-text-primary">ESG Goals Progress</h2>
+            <p className="text-xs text-text-secondary mt-0.5">Track progress against sustainability targets</p>
+          </div>
+          <span className="chip-gray">{goalsOverview.length} goals</span>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <table className="min-w-full">
+            <thead>
+              <tr style={{ background: '#F8C7AE22' }}>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Department</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Description</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Progress</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-border-main">
               {goalsOverview.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-sm text-gray-500">No goals set yet.</td>
+                  <td colSpan={4} className="px-6 py-10 text-center text-sm text-text-secondary">No goals set yet.</td>
                 </tr>
               ) : (
-                goalsOverview.map((goal) => {
-                  const statusClasses = {
-                    ON_TRACK: 'bg-green-100 text-green-800',
-                    AT_RISK: 'bg-yellow-100 text-yellow-800',
-                    ACHIEVED: 'bg-blue-100 text-blue-800',
-                    MISSED: 'bg-red-100 text-red-800',
-                  };
-                  return (
-                    <tr key={goal.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{goal.department}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{goal.description || '—'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div 
-                              className={`h-2 rounded-full ${goal.progress >= 100 ? 'bg-green-500' : 'bg-primary-500'}`}
-                              style={{ width: `${Math.min(100, goal.progress)}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-gray-600">{goal.progress}%</span>
+                goalsOverview.map(goal => (
+                  <tr
+                    key={goal.id}
+                    className="transition-colors duration-150"
+                    onMouseEnter={e => e.currentTarget.style.background = '#FFF8C9'}
+                    onMouseLeave={e => e.currentTarget.style.background = ''}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-text-primary">{goal.department}</td>
+                    <td className="px-6 py-4 text-sm text-text-secondary max-w-xs truncate">{goal.description || '—'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-32 bg-border-main rounded-full h-2">
+                          <div
+                            className="h-2 rounded-full transition-all duration-500"
+                            style={{
+                              width: `${Math.min(100, goal.progress)}%`,
+                              background: goal.progress >= 100 ? '#5E9E6F' : '#9BBDAF',
+                            }}
+                          />
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusClasses[goal.status] || ''}`}>
-                          {goal.status.replace('_', ' ')}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })
+                        <span className="text-sm font-medium text-text-secondary">{goal.progress}%</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={statusStyle[goal.status] || 'chip-gray'}>
+                        {goal.status.replace('_', ' ')}
+                      </span>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>

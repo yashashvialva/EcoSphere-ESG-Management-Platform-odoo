@@ -8,33 +8,28 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2E7D32',
-          hover: '#1B5E20',
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          500: '#2E7D32',
-          600: '#1B5E20',
-          700: '#114214',
+          DEFAULT: '#9BBDAF', // Sage green
+          hover: '#82a596',
         },
-        secondary: {
-          green: '#66BB6A',
-          DEFAULT: '#143616', // Dark green sidebar color
+        cream: '#FFF8C9',
+        peach: '#F8C7AE',
+        coral: {
+          DEFAULT: '#F27D88', // Coral pink
+          hover: '#df6671',
         },
-        accent: {
-          emerald: '#43A047',
-          DEFAULT: '#43A047',
-        },
-        danger: '#D32F2F',
-        warning: '#F9A825',
-        success: '#2E7D32',
-        background: '#F8FAF8',
+        mauve: '#836A78',
+        background: '#FCFBF7',
         border: {
-          main: '#E8ECE8',
+          main: '#ECE8E3',
         },
         text: {
-          primary: '#1F2937',
+          primary: '#2F2F2F',
           secondary: '#6B7280',
-        }
+        },
+        success: '#5E9E6F',
+        warning: '#F5C75D',
+        error: '#E96A6A',
+        info: '#7CA9D6',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
