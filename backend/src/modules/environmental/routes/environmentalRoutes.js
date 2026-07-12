@@ -5,14 +5,14 @@ const carbonTransactionController = require('../controllers/carbonTransactionCon
 const esgGoalController = require('../controllers/esgGoalController');
 const productProfileController = require('../controllers/productProfileController');
 const dashboardController = require('../controllers/dashboardController');
-const { validate } = require('../../../../middleware/validate');
-const { authenticate } = require('../../../../middleware/auth');
-const { authorize } = require('../../../../middleware/authorize');
+const { validate } = require('../../../middleware/validate');
+const { authenticate } = require('../../../middleware/auth');
+const { authorize } = require('../../../middleware/authorize');
 const { createEmissionFactorSchema, updateEmissionFactorSchema } = require('../validators/emissionFactorValidator');
 const { createCarbonTransactionSchema } = require('../validators/carbonTransactionValidator');
 const { createEsgGoalSchema, updateEsgGoalSchema } = require('../validators/esgGoalValidator');
 const { createProductProfileSchema, updateProductProfileSchema } = require('../validators/productProfileValidator');
-const { validateUUID } = require('../../../../middleware/validateUUID');
+const { validateUUID } = require('../../../middleware/validateUUID');
 
 // Apply authentication to all routes
 router.use(authenticate);
