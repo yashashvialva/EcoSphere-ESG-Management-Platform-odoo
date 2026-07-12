@@ -7,7 +7,7 @@ const prisma = require('../../config/prisma');
  */
 
 const awardXp = async (employeeId, points, sourceType, sourceId, description) => {
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     // 1. Get current employee to ensure they exist and get current XP
     const employee = await tx.employee.findUnique({
       where: { id: employeeId },
@@ -41,6 +41,11 @@ const awardXp = async (employeeId, points, sourceType, sourceId, description) =>
 
     return ledgerEntry;
   });
+
+  // 4. Automatically evaluate badges after XP is awarded (outside the main transaction to prevent long locks)
+  await evaluateBadges(employeeId);
+
+  return result;
 };
 
 const deductXp = async (employeeId, points, sourceType, sourceId, description) => {
@@ -83,9 +88,83 @@ const deductXp = async (employeeId, points, sourceType, sourceId, description) =
 };
 
 const evaluateBadges = async (employeeId) => {
-  // Stub for now. Will be implemented in Milestone 7.
-  console.log(`🎖️ [BADGE STUB] Evaluating badges for employee ${employeeId}`);
-  return [];
+  // 1. Get current employee XP
+  const employee = await prisma.employee.findUnique({
+    where: { id: employeeId },
+    select: { id: true, totalXp: true }
+  });
+
+  if (!employee) return [];
+
+  // 2. Fetch all active XP-based badges
+  const xpBadges = await prisma.badge.findMany({
+    where: { unlockMetric: 'TOTAL_XP', isActive: true },
+    orderBy: { unlockValue: 'asc' }
+  });
+
+  if (xpBadges.length === 0) return [];
+
+  // 3. Fetch badges the employee already has
+  const existingBadges = await prisma.employeeBadge.findMany({
+    where: { employeeId },
+    select: { badgeId: true }
+  });
+  const existingBadgeIds = new Set(existingBadges.map(b => b.badgeId));
+
+  const newlyAwarded = [];
+
+  // 4. Evaluate each badge
+  for (const badge of xpBadges) {
+    if (!existingBadgeIds.has(badge.id)) {
+      let isEligible = false;
+      const requiredXp = parseFloat(badge.unlockValue.toString());
+      const currentXp = employee.totalXp;
+
+      if (badge.unlockOperator === '>=') isEligible = currentXp >= requiredXp;
+      else if (badge.unlockOperator === '>') isEligible = currentXp > requiredXp;
+      else if (badge.unlockOperator === '==') isEligible = currentXp === requiredXp;
+
+      if (isEligible) {
+        // Award the badge (inside a transaction to handle bonus XP if applicable)
+        const awarded = await prisma.$transaction(async (tx) => {
+          const empBadge = await tx.employeeBadge.create({
+            data: {
+              employeeId,
+              badgeId: badge.id,
+              triggerMetricValue: currentXp,
+              sourceType: 'XP_EVALUATION'
+            },
+            include: { badge: true }
+          });
+
+          // Handle Bonus XP
+          if (badge.bonusXp > 0) {
+            const updatedEmp = await tx.employee.update({
+              where: { id: employeeId },
+              data: { totalXp: { increment: badge.bonusXp } }
+            });
+
+            await tx.xpLedger.create({
+              data: {
+                employeeId,
+                transactionType: 'CREDIT',
+                points: badge.bonusXp,
+                sourceType: 'BADGE_BONUS',
+                sourceId: empBadge.id,
+                description: `Bonus XP for earning badge: ${badge.name}`,
+                balanceAfter: updatedEmp.totalXp
+              }
+            });
+          }
+          return empBadge;
+        });
+
+        newlyAwarded.push(awarded);
+      }
+    }
+  }
+
+  return newlyAwarded;
 };
 
 module.exports = {
