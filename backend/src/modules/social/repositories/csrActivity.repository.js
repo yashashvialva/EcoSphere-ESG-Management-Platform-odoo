@@ -5,8 +5,7 @@ class CsrActivityRepository {
     return prisma.csrActivity.create({
       data,
       include: {
-        category: true,
-        organizer: { select: { id: true, firstName: true, lastName: true } }
+        category: true
       }
     });
   }
@@ -16,7 +15,6 @@ class CsrActivityRepository {
       where: { id },
       include: {
         category: true,
-        organizer: { select: { id: true, firstName: true, lastName: true } },
         _count: { select: { participations: true } }
       }
     });
@@ -38,7 +36,6 @@ class CsrActivityRepository {
         orderBy: { startDate: 'asc' },
         include: {
           category: true,
-          organizer: { select: { id: true, firstName: true, lastName: true } },
           _count: { select: { participations: true } }
         }
       })

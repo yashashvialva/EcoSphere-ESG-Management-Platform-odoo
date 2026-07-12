@@ -10,7 +10,6 @@ class CsrActivityService {
 
     return csrActivityRepository.create({
       ...data,
-      organizerId,
       status: CSR_STATUS.DRAFT
     });
   }
