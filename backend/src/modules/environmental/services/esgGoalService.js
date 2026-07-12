@@ -1,5 +1,5 @@
 const esgGoalRepository = require('../repositories/esgGoalRepository');
-const { NotFoundError, BadRequestError } = require('../../../../shared/errors/AppError');
+const { NotFoundError, BadRequestError } = require('../../../shared/errors/AppError');
 
 class EsgGoalService {
   async getGoals(query, user) {

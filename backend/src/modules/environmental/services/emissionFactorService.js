@@ -1,5 +1,5 @@
 const emissionFactorRepository = require('../repositories/emissionFactorRepository');
-const { NotFoundError, ConflictError, AppError } = require('../../../../shared/errors/AppError');
+const { NotFoundError, ConflictError, AppError } = require('../../../shared/errors/AppError');
 
 class EmissionFactorService {
   async getEmissionFactors(query) {

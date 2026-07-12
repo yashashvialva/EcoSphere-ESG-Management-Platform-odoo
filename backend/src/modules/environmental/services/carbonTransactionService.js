@@ -1,6 +1,6 @@
 const carbonTransactionRepository = require('../repositories/carbonTransactionRepository');
 const emissionFactorRepository = require('../repositories/emissionFactorRepository');
-const { NotFoundError, BadRequestError } = require('../../../../shared/errors/AppError');
+const { NotFoundError, BadRequestError } = require('../../../shared/errors/AppError');
 
 class CarbonTransactionService {
   async getTransactions(query, user) {

@@ -1,5 +1,5 @@
 const productProfileRepository = require('../repositories/productProfileRepository');
-const { NotFoundError, BadRequestError } = require('../../../../shared/errors/AppError');
+const { NotFoundError, BadRequestError } = require('../../../shared/errors/AppError');
 
 class ProductProfileService {
   async getProfiles(query, user) {
