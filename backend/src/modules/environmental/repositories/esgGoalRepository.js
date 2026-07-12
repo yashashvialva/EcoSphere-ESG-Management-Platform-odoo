@@ -1,4 +1,4 @@
-const prisma = require('../../../../config/prisma');
+const prisma = require('../../../config/prisma');
 
 class EsgGoalRepository {
   async findAll({ skip, take, departmentId }) {
@@ -6,7 +6,7 @@ class EsgGoalRepository {
     if (departmentId) where.department_id = departmentId;
 
     const [data, total] = await Promise.all([
-      prisma.eSGGoal.findMany({
+      prisma.esgGoal.findMany({
         where,
         skip,
         take,
@@ -15,14 +15,14 @@ class EsgGoalRepository {
           department: true,
         },
       }),
-      prisma.eSGGoal.count({ where }),
+      prisma.esgGoal.count({ where }),
     ]);
 
     return { data, total };
   }
 
   async findById(id) {
-    return prisma.eSGGoal.findUnique({
+    return prisma.esgGoal.findUnique({
       where: { id },
       include: {
         department: true,
@@ -31,7 +31,7 @@ class EsgGoalRepository {
   }
 
   async create(data) {
-    return prisma.eSGGoal.create({
+    return prisma.esgGoal.create({
       data: {
         department_id: data.departmentId,
         target_value: data.targetValue,
@@ -56,7 +56,7 @@ class EsgGoalRepository {
     if (data.description !== undefined) updateData.description = data.description;
     if (data.status !== undefined) updateData.status = data.status;
 
-    return prisma.eSGGoal.update({
+    return prisma.esgGoal.update({
       where: { id },
       data: updateData,
       include: {
@@ -66,7 +66,7 @@ class EsgGoalRepository {
   }
 
   async delete(id) {
-    return prisma.eSGGoal.delete({
+    return prisma.esgGoal.delete({
       where: { id },
     });
   }
