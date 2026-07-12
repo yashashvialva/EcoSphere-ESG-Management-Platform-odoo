@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Gift, Star, ShoppingBag, Clock } from 'lucide-react';
 import gamificationApi from '../../services/gamification.api';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../store/authStore';
 
 export default function Rewards() {
   const { user } = useAuth();

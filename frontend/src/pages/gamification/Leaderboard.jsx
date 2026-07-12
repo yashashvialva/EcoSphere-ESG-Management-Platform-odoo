@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Star, TrendingUp, Clock, History } from 'lucide-react';
 import gamificationApi from '../../services/gamification.api';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../store/authStore';
 
 export default function Leaderboard() {
   const { user } = useAuth();
